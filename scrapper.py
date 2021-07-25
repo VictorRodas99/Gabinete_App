@@ -8,13 +8,13 @@ def data(url_base, pibot):
     main = soup.find_all("main", class_="page-main")
 
     container = main[0].find_all("div", class_="main-container")
-    grid = container[0].find_all("div", class_="products-grid")
     try:
+        grid = container[0].find_all("div", class_="products-grid")
         li = grid[0].find_all("li", class_="product-item")
     except IndexError:
-        nulo = "None"
+        d = []
         print("Sin resultados")
-        return nulo
+        return d
 
     longitud = len(li)
     list_link = []
