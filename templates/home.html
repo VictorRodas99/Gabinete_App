@@ -28,19 +28,26 @@
     .btnav {
       color: white;
       border: none;
-      border-radius: 7px;
+      border-radius: 5px;
       background: rgb(5, 178, 190);
-      background: linear-gradient(90deg, rgba(5, 178, 190, 1) 50%, rgba(33, 32, 30, 1) 100%);
+      transition: 0.5s;
 
-      -webkit-transition: 1s linear;
+      /*-webkit-transition: 1s linear;
       -moz-transition: 1s linear;
       -o-transition: 1s linear;
-      transition: 1s linear;
+      transition: 1s linear;*/
     }
 
     .btnav:hover {
-      background: rgb(33, 32, 30);
-      background: linear-gradient(90deg, rgba(33, 32, 30, 1), rgba(5, 178, 190, 1));
+      border: 1px solid black;
+      color: rgb(44, 44, 44);
+      background: transparent;
+    }
+
+    .btnav:disabled, button[disabled]{
+      border: 1px solid #999999;
+      background-color: #cccccc;
+      color: #666666;
     }
 
     .error {
@@ -85,14 +92,14 @@
         </li>
       </ul>
       <form action="/" method="POST" class="form-inline my-2 my-lg-0">
-        <input name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca algo" aria-label="Search">
-        <button class="btnav my-2 my-sm-0 p-2" type="submit">Search</button>
+        <input id="searchinput" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca algo" aria-label="Search" oninput="offDisabledButton();">
+        <button id="buscar" class="btnav my-2 my-sm-0 p-2" type="submit">Search</button>
       </form>
     </div>
   </nav>
 
   <section class="container-fluid">
-    <div class="row p-5">
+    <div class="row p-3">
       {% if datos|length == 0 %}
           <div class="col-md-12 mt-5">
             <div class="container">
@@ -106,15 +113,17 @@
       {% else %}
           {% set index = [0] %}
           {% for i in datos %}
-              <div class="col-md-3 mb-3">
+              <div class="col-sm-3 mb-3">
                 <div class="card">
                   <img class="card-img-top" src="{{img_link[index[0]]}}" alt="Card image cap">
                   <div class="card-body">
-                    <strong>{{nombre[index[0]]}}</strong>
-                    {% for keys, values in i.items() %}
-                        <p class="card-text">{{keys}} {{values}}</p>
-                    {% endfor %}
+                    <h5 class="card-title">{{nombre[index[0]]}}</h5>
                   </div>
+                  <ul class="list-group list-group-flush">
+                      {% for keys, values in i.items() %}
+                          <li class="list-group-item"><strong>{{keys}}</strong> {{values}}</li>
+                      {% endfor %}
+                  </ul>
                 </div>
               </div>
               {% if index.append(index.pop() + 1) %}{% endif %}
@@ -122,6 +131,20 @@
       {% endif %}
     </div>
   </section>
+  <script>
+    var button = document.getElementById("buscar");
+    button.disabled = true;
+
+    function offDisabledButton(){
+      var value = document.getElementById("searchinput").value;
+
+      if(typeof value === 'string' && value != ""){
+        button.disabled = false; 
+      } else{
+        button.disabled = true;
+      }
+    }
+  </script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 </body>
