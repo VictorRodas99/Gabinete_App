@@ -21,7 +21,7 @@ git clone https://github.com/VictorRodas99/Gabinete_App.git
 cd Gabinete_App
 ```
 
-<p>3. Crear el virtualenv</p>
+<p>3. Crear el virtualenv.</p>
 
 ```bash
 python -m virtualenv env
@@ -33,7 +33,7 @@ python -m virtualenv env
 pip install virtualenv
 ```
 
-<p>4. Activar el virtualenv</p>
+<p>4. Activar el virtualenv.</p>
 
 - Para windows
 
@@ -51,14 +51,14 @@ cd ..
 source env/bin/activate
 ```
 
-<p>5. Instalar requerimientos</p>
+<p>5. Instalar requerimientos.</p>
 
 ```bash
 pip install Flask
 pip install beautifulsoup4
 ```
 
-<p>6. Correr el server </p>
+<p>6. Correr el server.</p>
 
 ```bash
 python main.py
