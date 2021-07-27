@@ -37,7 +37,8 @@ def data(url_base, pibot):
         soup = BeautifulSoup(page.content, "html.parser")
         main = soup.find_all("main", class_="page-main")
 
-        name = main[0].find("h1", class_="page-title").text
+        h1 = main[0].find("h1", class_="page-title")
+        name = h1.find("span", class_="base").string
 
         product = main[0].find_all("div", class_="product media")
         info_product = main[0].find_all("div", class_="product-info-price")
@@ -66,11 +67,24 @@ def data(url_base, pibot):
             for keys in detalles: #por alguna razón las values tenían "\xa0" como primer elemento... entonces lo quitamos aquí
                     values = detalles[keys]
                     detalles[keys] = values[1:]
+            
+            detalles = {k.replace(":", ""): v.replace('"', "'") for k, v in detalles.items()}
 
             precio = info_product[0].find("span", class_="price").text
             detalles['Precio'] = precio
 
             nombre_producto.append(name)
+
+            for i in range(len(nombre_producto)):
+                string = ""
+                for j in nombre_producto[i]:
+                    if j != '"':
+                        string = string+j
+                    else:
+                        string = string+"'"
+
+                nombre_producto[i] = string
+
             datos.append(detalles)
         except AttributeError:
             continue
