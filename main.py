@@ -24,6 +24,13 @@ def render():
         return render_template("home.html", datos=datos, nombre=nombre_producto, img_link=img_link)
 
 
+@app.route('/sel', methods=["POST", "GET"])
+def select():
+    if request.method == "POST":
+        sel = request.json
+        print("-------------------------------",sel,"-----------------------------")
+        return render_template('sel.html', sel=sel)
+
 
 if __name__=="__main__":    
     app.run(debug=True)
