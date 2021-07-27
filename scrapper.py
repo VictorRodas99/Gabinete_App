@@ -6,15 +6,14 @@ def data(url_base, pibot):
     page = requests.get(url_base)
     soup = BeautifulSoup(page.content, "html.parser")
     main = soup.find_all("main", class_="page-main")
-
-    container = main[0].find_all("div", class_="main-container")
+    
     try:
+        container = main[0].find_all("div", class_="main-container")
         grid = container[0].find_all("div", class_="products-grid")
         li = grid[0].find_all("li", class_="product-item")
     except IndexError:
-        d = []
         print("Sin resultados")
-        return d
+        return [],[],[]
 
     longitud = len(li)
     list_link = []
@@ -86,21 +85,10 @@ def data(url_base, pibot):
                 nombre_producto[i] = string
 
             datos.append(detalles)
-        except AttributeError:
+        except (AttributeError, IndexError) as e:
             continue
-    
-    return datos, nombre_producto, list_img_link
 
-#---------------------Para página principal-------------------------
-url_base = "https://www.casanissei.com/py/informatica"
-url_pibot = "https://www.casanissei.com/py/" #Para el for
-#--------------------------------------------------------------------
-
-#----------------------Para búsqueda--------------------------------
-busqueda = "Valor sacado del input del html" #input("Ingrese lo que quiere buscar: ")
-busqueda = busqueda.replace(" ", "+")
-url_base_search = "https://www.casanissei.com/py/catalogsearch/result/?q="+busqueda
-url_pibot_search = "https://www.casanissei.com"
-#-------------------------------------------------------------------
-
-#data(url_base_search, url_pibot_search)
+    if len(datos) == 0:
+        return [],[],[]
+    else:
+        return datos, nombre_producto, list_img_link
