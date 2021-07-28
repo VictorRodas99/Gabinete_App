@@ -45,10 +45,16 @@
       background: transparent;
     }
 
-    .btnav:disabled, button[disabled]{
+    .btnav:disabled, .btnav[disabled]{
       border: 1px solid #999999;
       background-color: #cccccc;
       color: #666666;
+    }
+
+    .btn-modal:disabled, button[disabled]{
+      border: 1px solid rgb(5, 178, 190);
+      color: rgb(5, 178, 190);
+      background: transparent;
     }
 
     .btn-modal {
@@ -178,7 +184,7 @@
                     <div class="modal-body">
                       <div class="cont">
                         <div class="tp-content">
-                          <span style="display: none;"></span>
+                          <span id="sup" style="display: none;"></span>
                         </div>
                       </div>
                     </div>
@@ -225,8 +231,41 @@
       return parseInt(num);
     }
 
+    function putPoints(num){
+      let valorString = num.toString();
+      let len = valorString.length;
+      let c = 0;
+      let newString = "";
+      let valorFormat = "";
+
+      for(i=len; i >= 0; i=i-1){
+          c = c+1;
+          if(len == 1){
+              newString = valorString
+          }
+          if(c == 3){
+              cen = "."+valorString.slice(-3);
+              newString = cen+newString
+              valorString = valorString.slice(0, -3)
+
+              if(valorString.length == 1){
+                  newString = valorString+newString
+              }         
+              c = 0;
+          }
+      }
+
+      if(newString[0] == '.'){
+          newString = newString.slice(1);
+      }
+
+      return newString;
+    }
+
     var seleccionados = [];
     var contador = [];
+    var selGeneral = [];
+    var productButtons = document.getElementsByClassName("add");
     var total = 0;
     $('.add').click(function(){
       contador.push("a")
@@ -239,30 +278,39 @@
         'price': price
       });
 
-      console.log(seleccionados);
+      selGeneral.push({
+        'title': title,
+        'price': price
+      });
+
+      console.log("Seleccionados list, antes de borrar: ", seleccionados);
       let i = contador.length;
-      console.log(i);
+      console.log("Longitud del contador: ", i);
       
       let conTitle = Object.entries(seleccionados[i-1])[0][1] //Object.entries devuelve una lista de keys y values dentro de otra lista
       let conPrice = Object.entries(seleccionados[i-1])[1][1]
 
       let tagTitle = '<p style="display: inline-block">'+conTitle+'</p>'
       let tagPrice = '<p style="display: inline-block color: rgb(5, 178, 190)"><strong>'+conPrice+'</strong></p>'
-      let del = '<button class="btn-del far fa-trash-alt" value="'+i+'"></button>'
+      let del = '<button class="btn-del far fa-trash-alt '+index+'" value="'+i+'"></button>'
       let tpContent = '<div class="tp-content '+i+'">'+tagTitle+tagPrice+del+'<hr></hr></div>'
 
       document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
       document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+i+'</span>'
 
       forPrice = Object.entries(seleccionados[i-1])[1][1]
-      console.log("---------------------",forPrice)
 
       num = formatPrice(forPrice);
-      console.log("------------",total,"+",num,"------------------")
       total = num+total;
+      totalFormat = putPoints(total);
 
-      document.getElementById("total").innerHTML = "Total: Gs. "+total;
+      document.getElementById("total").innerHTML = "<strong>Total: Gs. "+totalFormat+"</strong>";
 
+      setTimeout(function(){
+        productButtons[index].disabled = true;
+        productButtons[index].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregado al carrito'
+      },100);
+      
     });
 
     $('.add').click(function(){
@@ -281,29 +329,40 @@
     $(document).on('click', '.btn-del', function(){
       console.log("borrando")
       let clase = $(this).val();
+      let i = parseInt($(this).attr("class").slice(-1));
+      //console.log("Index del botón a eliminar: ",i)
       let div = document.getElementsByClassName(clase)[0];
       let padre = div.parentNode;
 
-      claseInt = parseInt(clase);
-      index = claseInt-1;
+      let index = (parseInt($(this).val())-1);
+      //console.log("Index de seleccionados list antes de borrar: ", index);
 
       let forPrice = Object.entries(seleccionados[index])[1][1]
       num = formatPrice(forPrice);
       num = total-num;
+      total = num;
+      numFormat = putPoints(total);
 
       padre.removeChild(div);
 
-      seleccionados.splice(index, 1);
-      console.log(seleccionados)
+      selGeneral.splice(index, 1); //Tiene problemas
+      console.log(selGeneral)
       contador.pop();
 
       document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador.length+'</span>';
-      document.getElementById("total").innerHTML = "<strong>Total: Gs. "+num+"</strong>";
+      document.getElementById("total").innerHTML = "<strong>Total: Gs. "+numFormat+"</strong>";
+      productButtons[i].disabled = false;
+      productButtons[i].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al carrito'
+
+      if(contador.length == 0){
+        for(i=seleccionados.length; i > 0 ;i--){
+          seleccionados.pop()
+        }
+      }
 
     });
 
   </script>
-  <!--   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>  -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 </body>
 </html>
