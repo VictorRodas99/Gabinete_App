@@ -24,7 +24,7 @@ def render():
         return render_template("home.html", carrito=carrito, datos=datos, nombre=nombre_producto, img_link=img_link)
     else:
         with open("./data.json", "w") as f:
-            f.write("")
+            f.write("[]")
         
         url_base = "https://www.casanissei.com/py/informatica"
         url_pibot = "https://www.casanissei.com/py/"

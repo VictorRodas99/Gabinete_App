@@ -55,6 +55,10 @@
       color: #666666;
     }
 
+    .blocked{
+      z-index: 50;
+    }
+
     .card{
       border: 1px solid rgb(5, 178, 190);
       border-radius: 15px;
@@ -157,10 +161,23 @@
       </ul>
       <form action="/home" method="POST" class="form-inline my-2 my-lg-0">
         <input id="searchinput" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca algo" aria-label="Search" oninput="offDisabledButton();">
-        <button id="buscar" class="btnav my-2 my-sm-0 p-2" type="submit">Buscar</button>
+        <button id="buscar" class="btnav btn-modal my-2 my-sm-0 p-2" type="submit" data-toggle="modal" data-target="#modal-1">Buscar</button>
       </form>
     </div>
   </nav>
+
+  <div class="blocked modal fade" id="modal-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content d-flex">
+        <div class="modal-body m-auto">
+          <img src="https://i.ibb.co/B3zRRnP/gif-charging.gif" alt="//" style="width: 20rem;">
+        </div>
+        <div class="modal-footer">
+          <p class="font-italic">Buscando... esto podría tardar un poco...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <section class="container-fluid">
     <div class="row p-3">
