@@ -139,7 +139,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/home">
       <i class="fas fa-laptop" style="color: rgb(5, 178, 190);"></i>
     </a>
     <div class="title text-center p-1">
@@ -152,10 +152,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="/" style="color: rgb(5, 178, 190);">Home <span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="/home" style="color: rgb(5, 178, 190);">Home <span class="sr-only">(current)</span></a>
         </li>
       </ul>
-      <form action="/" method="POST" class="form-inline my-2 my-lg-0">
+      <form action="/home" method="POST" class="form-inline my-2 my-lg-0">
         <input id="searchinput" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca algo" aria-label="Search" oninput="offDisabledButton();">
         <button id="buscar" class="btnav my-2 my-sm-0 p-2" type="submit">Buscar</button>
       </form>
@@ -421,7 +421,7 @@
         contentType: 'application/json',
         data: JSON.stringify(seleccionados),
         dataType: 'json',
-        url: '/sel',
+        url: '/',
         success: function(){
           console.log("Enviado")
         }

@@ -6,7 +6,7 @@ import scrapper as scpr
 
 app = Flask(__name__)
 
-@app.route('/', methods=["POST", "GET"])
+@app.route('/home', methods=["POST", "GET"])
 def render():
     if request.method == "POST":
         busqueda = request.form['busqueda']
@@ -31,10 +31,11 @@ def render():
 
         carrito = []
         datos, nombre_producto, img_link = scpr.data(url_base, url_pibot)
+        
         return render_template("home.html", carrito=carrito, datos=datos, nombre=nombre_producto, img_link=img_link)
 
 
-@app.route('/sel', methods=["POST", "GET"])
+@app.route('/', methods=["POST", "GET"])
 def select():
     if request.method == "POST":
         sel = request.json
@@ -44,6 +45,8 @@ def select():
 
         print("-------------------------------",sel,"-----------------------------")
         return render_template('sel.html', sel=sel)
+    else:
+        return render_template('sel.html')      
 
 
 if __name__=="__main__":    
