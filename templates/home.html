@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,11 +41,6 @@
       border-radius: 5px;
       background: rgb(5, 178, 190);
       transition: 0.5s;
-
-      /*-webkit-transition: 1s linear;
-      -moz-transition: 1s linear;
-      -o-transition: 1s linear;
-      transition: 1s linear;*/
     }
 
     .btnav:hover {
@@ -58,6 +53,15 @@
       border: 1px solid #999999;
       background-color: #cccccc;
       color: #666666;
+    }
+
+    .card{
+      border: 1px solid rgb(5, 178, 190);
+      border-radius: 15px;
+    }
+
+    .card li{
+        border-bottom: 1px solid rgb(5, 178, 190);
     }
 
     .btn-modal:disabled, button[disabled]{
@@ -224,10 +228,34 @@
     //----------------------------------------------------
     var datos = JSON.parse('{{datos | tojson | safe}}');
     var nombre = JSON.parse('{{ nombre | tojson | safe }}');
+    var carritos = JSON.parse('{{ carrito | tojson | safe }}');
     //----------------------------------------------------
+
+    var carrito = []
+    if(carritos.length > 0){ //Reasigamos los valores en una nueva lista ya que la enviada por el back está volteada (price primero, title después)
+      for(j=0; j < carritos.length; j++){
+        let prodTitle = Object.entries(carritos[j])[1][1];
+        let prodPrice = Object.entries(carritos[j])[0][1];
+
+        carrito.push({
+          'title': prodTitle,
+          'price': prodPrice
+        });
+      }
+    }
+
+    console.log("Enviados: ",carrito);
 
     var button = document.getElementById("buscar");
     button.disabled = true;
+
+    try{
+      let div = document.getElementsByClassName("empty")[0];
+      let padre = div.parentNode;
+      padre.removeChild(div);
+    } catch(error){
+      console.log("No existe aún emptyDiv");
+    }
 
     function offDisabledButton(){
       var value = document.getElementById("searchinput").value;
@@ -283,12 +311,63 @@
       return newString;
     }
 
-    var seleccionados = [];
-    var contador = [];
+    function putDataInLIst(conTitle, conPrice,i, index, contador){
+      let tagTitle = '<p class="'+(i+1)+'" style="display: inline-block">'+conTitle+'</p>'
+      let tagPrice = '<p style="display: inline-block color: rgb(5, 178, 190)"><strong>'+conPrice+'</strong></p>'
+      let del = '<button id="'+index+'" class="btn-del far fa-trash-alt" value="'+(i+1)+'"></button>'
+      let tpContent = '<div class="tp-content '+(i+1)+'">'+tagTitle+tagPrice+del+'<hr></hr></div>'
+
+      document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
+      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador+'</span>'
+    }
+
+    function findIndex(Array, title){
+      let i;
+      for(j=0; j < Array.length; j++){
+        if(title == Object.entries(Array[j])[0][1]){
+          i = Array.indexOf(Array[j]);
+          break;
+        }
+      }
+      return i;
+    }
+
+    var seleccionados = carrito || [] //si hay algo en el back.. traer
+    console.log("Guardado en la variabe seleccionados: ", seleccionados)
     var productButtons = document.getElementsByClassName("add");
     var total = 0;
+    var contador = 0;
+
+    setTimeout(function(){
+      if(seleccionados.length > 0){
+        console.log("Ingresé al condicional");
+        let index;
+        console.log("Longitud de los seleccionados después de cargar: ", seleccionados.length);
+
+        for(j=0; j < seleccionados.length; j++){
+          let titleAux = Object.entries(seleccionados[j])[0][1];
+          let priceAux = Object.entries(seleccionados[j])[1][1];
+          console.log("Establecí el valor para title y price");
+          index = "nulo"+j;
+  
+          i = findIndex(seleccionados, titleAux);
+          contador += 1;
+          putDataInLIst(titleAux, priceAux, i, index, contador);
+  
+          forPrice = priceAux;
+  
+          num = formatPrice(forPrice);
+          total = num+total;
+          totalFormat = putPoints(total);
+    
+          document.getElementById("total").innerHTML = "<strong>Total: Gs. "+totalFormat+"</strong>";
+        }
+      }
+    }, 100);
+
+
     $('.add').click(function(){
-      contador.push("a")
+      contador += 1;
       let index = $(this).val();
       let title = nombre[index] 
       let price = datos[index].Precio
@@ -300,8 +379,8 @@
             let padre = div.parentNode;
             padre.removeChild(div);
           } catch(error){console.log("No existe aún emptyDiv")}
+        }
       }
-    }
 
       seleccionados.push({
         'title': title,
@@ -311,21 +390,15 @@
       delDiv();
 
       //console.log("Seleccionados list, antes de borrar: ", seleccionados);
-      let i = contador.length;
+      i = findIndex(seleccionados, title);
       //console.log("Longitud del contador: ", i);
       
-      let conTitle = Object.entries(seleccionados[i-1])[0][1] //Object.entries devuelve una lista de keys y values dentro de otra lista
-      let conPrice = Object.entries(seleccionados[i-1])[1][1]
+      let conTitle = Object.entries(seleccionados[i])[0][1] //Object.entries devuelve una lista de keys y values dentro de otra lista
+      let conPrice = Object.entries(seleccionados[i])[1][1]
 
-      let tagTitle = '<p class="'+i+'" style="display: inline-block">'+conTitle+'</p>'
-      let tagPrice = '<p style="display: inline-block color: rgb(5, 178, 190)"><strong>'+conPrice+'</strong></p>'
-      let del = '<button class="btn-del far fa-trash-alt '+index+'" value="'+i+'"></button>'
-      let tpContent = '<div class="tp-content '+i+'">'+tagTitle+tagPrice+del+'<hr></hr></div>'
+      putDataInLIst(conTitle, conPrice, i, index, contador);
 
-      document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
-      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+i+'</span>'
-
-      forPrice = Object.entries(seleccionados[i-1])[1][1]
+      forPrice = Object.entries(seleccionados[i])[1][1]
 
       num = formatPrice(forPrice);
       total = num+total;
@@ -337,10 +410,12 @@
         productButtons[index].disabled = true;
         productButtons[index].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregado al carrito'
       },100);
+
+      update();
       
     });
 
-    $('.add').click(function(){
+    function update(){
       $.ajax({
         type: 'POST',
         contentType: 'application/json',
@@ -351,7 +426,7 @@
           console.log("Enviado")
         }
       });
-    });
+    }
 
     $(".btn-flotante").click(function(){
       if(seleccionados.length == 0){
@@ -361,13 +436,21 @@
           let tpContentVoid = '<div class="tp-content empty" style="text-align: center;">'+tagImg+tagP+'</div>'
           document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContentVoid);
         }
+      } else{
+        console.log("El div existe")
       }
     });
     
+    let indice;
     $(document).on('click', '.btn-del', function(){
       console.log("borrando")
       let clase = $(this).val();
-      let i = parseInt($(this).attr("class").slice(-1));
+
+      try{
+        indice = parseInt($(this).attr("id"));
+        console.log("Index del btn-del: ", indice);
+      } catch(error){}
+
       let div = document.getElementsByClassName(clase)[0];
       let padre = div.parentNode;
 
@@ -382,7 +465,12 @@
         }
       }
 
-      let forPrice = Object.entries(seleccionados[index])[1][1]
+      try{
+        let forPrice = Object.entries(seleccionados[index])[1][1]; 
+      } catch(error){
+        let forPrice = Object.entries(seleccionados[index])[0][1];
+      }
+
       num = formatPrice(forPrice);
       num = total-num;
       total = num;
@@ -392,7 +480,7 @@
 
       seleccionados.splice(index, 1);
       console.log(seleccionados)
-      contador.pop();
+      contador = contador - 1;
 
       if(seleccionados.length == 0){
         let tagImg = '<h4 class="fas fa-exclamation"></h4>'
@@ -401,10 +489,15 @@
         document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
       }
 
-      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador.length+'</span>';
+      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador+'</span>';
       document.getElementById("total").innerHTML = "<strong>Total: Gs. "+numFormat+"</strong>";
-      productButtons[i].disabled = false;
-      productButtons[i].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al carrito'
+
+      try{
+        productButtons[indice].disabled = false;
+        productButtons[indice].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al carrito';
+      } catch(error){}
+
+      update();
 
     });
 
