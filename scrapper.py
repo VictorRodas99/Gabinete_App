@@ -15,7 +15,7 @@ def data(url_base, pibot):
         print("Sin resultados")
         return [],[],[]
 
-    longitud = 10 #----
+    longitud = 5 #----
     list_link = []
     for i in range(longitud):
         data = li[i]
