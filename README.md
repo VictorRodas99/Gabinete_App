@@ -67,6 +67,7 @@ flask run
 ```
 
 <p>O sino (en el directorio raíz)</p>
+
 ```bash
 python main.py
 ```
