@@ -1,94 +1,89 @@
 from bs4 import BeautifulSoup
 import requests
-import json
 
-def data(url_base, pibot):
+def get_products_links(container) -> list:
+    list_links = []
+    len_container = len(container)
+    max = 8
+
+    if len_container < 8: max = len_container
+
+    x = 0
+    while x < max: #MAX LONG 8
+        link = container[x].find("a", class_="product-item-link")
+        list_links.append(link.attrs['href'])
+        x+=1
+
+    return list_links
+
+def get_product_data(link:str) -> tuple:
+    page = requests.get(link)
+    soup = BeautifulSoup(page.content, "html.parser")
+    
+    main = soup.find("div", class_="column")
+    main_info = main.find("div", class_="product-info-price")
+    container_details = main_info.find("div", class_="value").find("ul")
+
+    name = main.find("h1", class_="page-title").find("span", class_="base").string
+    price = main_info.find("span", class_="price").string
+    info = container_details.find_all("li")
+    img_link = main.find("div", class_="gallery-placeholder__image").find("img").attrs['src']
+
+    name.replace('"', "'")
+
+    return name, price, info, img_link
+
+def transform_data(info:list) -> dict:
+    data = {}
+
+    i = 0
+    while i < len(info): 
+        key = info[i].strong.text.replace(":", "")
+        value = info[i].text.replace(key, "")
+
+        if value[0] == " ":
+            value = value[2::]
+        
+        data[key] = value
+        i+=1
+    
+    return data
+
+
+def data(url_base:str):
     page = requests.get(url_base)
     soup = BeautifulSoup(page.content, "html.parser")
-    main = soup.find_all("main", class_="page-main")
-    
+    main = soup.find("div", class_="column")
+    grid = main.find("div", class_="products-grid")
+
     try:
-        container = main[0].find_all("div", class_="main-container")
-        grid = container[0].find_all("div", class_="products-grid")
-        li = grid[0].find_all("li", class_="product-item")
-    except IndexError:
+        products_list = grid.find_all("li", class_="product-item")
+    except AttributeError:
         print("Sin resultados")
-        return [],[],[]
+        return [], [], []
 
-    longitud = 5 #----
-    list_link = []
-    for i in range(longitud):
-        data = li[i]
-        link_product = data.find_all("a",  class_="product-item-link")
-        list_link.append(link_product[0].attrs['href'])
+    list_links = get_products_links(products_list)
 
-    url_base = pibot
-    nombre_producto = []
-    datos = []
-    list_img_link = []
-    contador = 0
-    for link in list_link:
-        contador = contador +1
-        print(contador)
-        detalles = {}
-        url_final = url_base+link
-        page = requests.get(url_final)
-        soup = BeautifulSoup(page.content, "html.parser")
-        main = soup.find_all("main", class_="page-main")
+    products_name = []
+    data = []
+    img_links = []
 
-        h1 = main[0].find("h1", class_="page-title")
-        name = h1.find("span", class_="base").string
-
-        product = main[0].find_all("div", class_="product media")
-        info_product = main[0].find_all("div", class_="product-info-price")
-
+    iter_links = iter(list_links)
+    while True:
         try:
-            detalles_product = info_product[0].find("ul")
-            li = detalles_product.find_all("li")    
-
-            c = 0
-            for i in li:
-                key = li[c].strong.text
-                c = c+1
-                value = i.text.replace(key, "")
-                detalles[key]=value
+            link = next(iter_links)
+            name, price, info, img_link = get_product_data(link)
             
+            info_dict = transform_data(info)
+            info_dict['Precio'] = price
 
-            script = product[0].find("script", type="text/x-magento-init").string
-            dic_org = json.loads(script)
-            dic_2 = dic_org['[data-gallery-role=gallery-placeholder]']
-            dic_3 = dic_2['mage/gallery/gallery']
-            dic = dic_3['data']
-            dic = dic[0]
-            img_src = dic['img']
-            list_img_link.append(img_src)
-            
-            for keys in detalles: #por alguna razón las values tenían "\xa0" como primer elemento... entonces lo quitamos aquí
-                    values = detalles[keys]
-                    detalles[keys] = values[1:]
-            
-            detalles = {k.replace(":", ""): v.replace('"', "'") for k, v in detalles.items()}
+            products_name.append(name)
+            data.append(info_dict)
+            img_links.append(img_link)
 
-            precio = info_product[0].find("span", class_="price").text
-            detalles['Precio'] = precio
-
-            nombre_producto.append(name)
-
-            for i in range(len(nombre_producto)):
-                string = ""
-                for j in nombre_producto[i]:
-                    if j != '"':
-                        string = string+j
-                    else:
-                        string = string+"'"
-
-                nombre_producto[i] = string
-
-            datos.append(detalles)
-        except (AttributeError, IndexError) as e:
-            continue
-
-    if len(datos) == 0:
-        return [],[],[]
+        except StopIteration: break
+    
+    if len(data) == 0:
+        return [], [], []
     else:
-        return datos, nombre_producto, list_img_link
+        return data, products_name, img_links
