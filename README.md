@@ -1,11 +1,12 @@
 # Gabinete_App
 
-Proyecto donde se realiza una PWA (Progressive web app)
+Proyecto donde se realiza una Página web de búsqueda de productos electrónicos
 
 ## Requerimientos:
 
-1. Flask
-2. BeautifulSoup
+1. Versión de python 3.6 o superior
+2. Flask
+3. BeautifulSoup
 
 # Instrucciones para levantar el proyecto
 
@@ -48,18 +49,24 @@ cd ..
 - Para linux
 
 ```bash
-source env/bin/activate
+source ./env/bin/activate
 ```
 
 <p>5. Instalar requerimientos.</p>
 
 ```bash
-pip install Flask
-pip install beautifulsoup4
+pip install -r requirements.txt
 ```
 
 <p>6. Correr el server.</p>
 
+```bash
+export FLASK_APP=main
+export FLASK_ENV=development
+flask run
+```
+
+<p>O sino (en el directorio raíz)</p>
 ```bash
 python main.py
 ```
