@@ -10,13 +10,28 @@ crochet.setup()
 
 app = Flask(__name__)
 socket = SocketIO(app)
-runner = CrawlerRunner(settings=None)
-base_url = "https://www.casanissei.com/py/informatica"
-#search_url = "https://www.casanissei.com/py/catalogsearch/result/?q="+busqueda
 
-@app.route('/')
+settings_for_runner = {
+    "HTTPCACHE_ENABLED": "False",
+    "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0"
+}
+
+runner = CrawlerRunner(settings_for_runner)
+base_url = "https://www.casanissei.com/py/informatica"
+
+@app.route('/', methods=['GET', 'POST'])
 def render():
-    scraper(base_url)
+    method = request.method
+
+    if method == 'GET':
+        scraper(base_url)
+
+    elif method == 'POST':
+        query = request.form['searhing'].replace(" ", "+")
+        search_url = f"https://www.casanissei.com/py/catalogsearch/result/?q={query}"
+
+        scraper(search_url)
+
     return render_template('new_home.html')
 
 
@@ -29,8 +44,6 @@ def scraper(url):
 socket.on('event')
 def get_data(spider):
     data = spider.data
-    print(data[0]['name'], end="\n\n") #Debug
-
     socket.emit('Response', data)
 
 
