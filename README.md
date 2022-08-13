@@ -6,7 +6,7 @@ Proyecto donde se realiza una Página web de búsqueda de productos electrónico
 
 1. Versión de python 3.6 o superior
 2. Flask
-3. BeautifulSoup
+3. Scrapy
 
 # Instrucciones para levantar el proyecto
 
@@ -59,14 +59,6 @@ pip install -r requirements.txt
 ```
 
 <p>6. Correr el server.</p>
-
-```bash
-export FLASK_APP=main
-export FLASK_ENV=development
-flask run
-```
-
-<p>O sino (en el directorio raíz)</p>
 
 ```bash
 python main.py
