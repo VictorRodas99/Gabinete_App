@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,500;1,500&display=swap');
 
 /* Variables */
 :root {
@@ -133,6 +133,27 @@ body {
     border: var(--primary-border-style);
     color: var(--primary-color);
     background: transparent;
+}
+
+
+
+/* Carrito Modal */
+.counter {
+    color: #ffff;
+    background-color: var(--primary-color);
+    padding-top: 0.2rem; padding-bottom: 0.2rem;
+    padding-left: 0.8rem; padding-right: 0.8rem;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.price { font-style: bold }
+
+.trash {
+    background: none;
+    border:none;
+    cursor:pointer;
+    display: inline-block;
 }
 
 
