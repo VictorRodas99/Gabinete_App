@@ -36,6 +36,7 @@ class ScraperSpider(scrapy.Spider):
         img_link = main_container.css('div.gallery-placeholder__image img::attr(src)').get()
 
         info = {}
+        info['Precio'] = price
         for d in details:
             key = d.css('::text').get().replace(':', '')
             value = d.css('li::text').get()
@@ -43,7 +44,6 @@ class ScraperSpider(scrapy.Spider):
 
         data = {
             'name': name,
-            'price': price,
             'imgLink': img_link,
             'info': info
         }
