@@ -1,524 +1,110 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <title>Home</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap');
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      font-family: 'Roboto', 'sans-serif';
-    }
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <!-- ----------- -->    
 
-    .title {
-      border-radius: 2px;
-      border-right: 1px solid rgba(5, 178, 190, 0.479);
-    }
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/loadStyles.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/render.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/socket.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/carrito.js') }}" defer></script>
+    <!-- ------- -->
 
-    .title h2 {
-      background: -webkit-linear-gradient(rgb(31, 211, 211), rgb(47, 126, 113));
-      font-weight: bold;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .navbar{
-      border-bottom: 1px solid rgb(5, 178, 190);
-      border-left: 1px solid rgb(5, 178, 190);;
-      border-right: 1px solid rgb(5, 178, 190);;
-      border-bottom-left-radius: 15px;
-      border-bottom-right-radius: 15px;
-    }
-
-    .btnav {
-      color: white;
-      border: none;
-      border-radius: 5px;
-      background: rgb(5, 178, 190);
-      transition: 0.5s;
-    }
-
-    .btnav:hover {
-      border: 1px solid rgb(5, 178, 190);
-      color: rgb(5, 178, 190);
-      background: transparent;
-    }
-
-    .btnav:disabled, .btnav[disabled]{
-      border: 1px solid #999999;
-      background-color: #cccccc;
-      color: #666666;
-    }
-
-    .blocked{
-      z-index: 50;
-    }
-
-    .card{
-      border: 1px solid rgb(5, 178, 190);
-      border-radius: 15px;
-    }
-
-    .card li{
-        border-bottom: 1px solid rgb(5, 178, 190);
-    }
-
-    .btn-modal:disabled, button[disabled]{
-      border: 1px solid rgb(5, 178, 190);
-      color: rgb(5, 178, 190);
-      background: transparent;
-    }
-
-    .btn-modal {
-      border: 1px solid rgb(5, 178, 190);
-      padding: 0.8rem;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      background: rgb(5, 178, 190);
-      transition: 0.5s;
-    }
-
-    .btn-modal:active, .btn-modal:hover {
-        border: 1px solid rgb(5, 178, 190);
-        color: rgb(5, 178, 190);
-        background: transparent;
-      }
-
-    .btn-del{
-      background: none;
-      border:none;
-      cursor:pointer;
-      display: inline-block;
-    }
-
-
-    .error {
-        text-align: center;
-    }
-
-    #contador{
-      color: white;
-      background-color: rgb(5, 178, 190);
-      padding-top: 0.2rem; padding-bottom: 0.2rem;
-      padding-left: 0.8rem; padding-right: 0.8rem;
-      text-align: center;
-      border-radius: 20px;
-    }
-
-    .btn-flotante {
-      outline: none;
-      border: none;
-      font-size: 1rem;
-      color: white;
-      border-radius: 20px;
-      background: rgb(5, 178, 190);
-      padding: 18px 30px;
-      position: fixed;
-      bottom: 40px;
-      right: 40px;
-      transition: all 300ms ease 0ms;
-      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-      z-index: 99;
-    }
-
-    .btn-flotante:hover {
-      background: white;
-      color: rgb(5, 178, 190);
-      box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.3);
-      transform: translateY(-3px);
-    }
-
-    @media (max-width: 991px) {
-      .title {
-        border: transparent;
-      }
-    }
-  </style>
+    <title>Cargando...</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg">
-    <a class="navbar-brand" href="/home">
-      <i class="fas fa-laptop" style="color: rgb(5, 178, 190);"></i>
-    </a>
-    <div class="title text-center p-1">
-      <h2>CompuShop</h2>
-    </div>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="border: none;">
-      <h4 class="fas fa-bars" style="color: rgb(5, 178, 190);"></h4>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/home" style="color: rgb(5, 178, 190);">Home <span class="sr-only">(current)</span></a>
-        </li>
-      </ul>
-      <form action="/home" method="POST" class="form-inline my-2 my-lg-0">
-        <input id="searchinput" name="busqueda" class="form-control mr-sm-2" type="search" placeholder="Busca algo" aria-label="Search" oninput="offDisabledButton();">
-        <button id="buscar" class="btnav btn-modal my-2 my-sm-0 p-2" type="submit" data-toggle="modal" data-target="#modal-1">Buscar</button>
-      </form>
-    </div>
-  </nav>
-
-  <div class="blocked modal fade" id="modal-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content d-flex">
-        <div class="modal-body m-auto">
-          <img src="https://i.ibb.co/B3zRRnP/gif-charging.gif" alt="//" style="width: 20rem;">
+    <section class="charging-section container text-center pt-5">
+        <div class="charging-container">
+            <h2 class="charging-text">Cargando...</h2>
         </div>
-        <div class="modal-footer">
-          <p class="font-italic">Buscando... esto podría tardar un poco...</p>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <section class="container-fluid">
-    <div class="row p-3">
-      {% if datos|length == 0 %}
-          <div class="col-md-12 mt-5">
-            <div class="container">
-              <div class="error">
-                <h1 class="display-1 far fa-frown"></h1>
-                <h1>Error en la búsqueda</h1>
-                <p class="card-text">Ups! parece que no hemos podido encontrar nada</p>
-              </div>
+    <main class="main-container">
+        <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-laptop set-color"></i>
+            </a>
+            <div class="title text-center p-1">
+                <h2>CompuShop</h2>
             </div>
-          </div>
-      {% else %}
-          {% set index = [0] %}
-          {% for i in datos %}
-              <div class="col-sm-3 mb-3">
-                <div class="card">
-                  <img class="card-img-top" src="{{img_link[index[0]]}}" alt="Card image cap">
-                  <div class="card-body">
-                    <h5 class="card-title">{{nombre[index[0]]}}</h5>
-                  </div>
-                  <ul class="list-group list-group-flush">
-                    {% for keys, values in i.items() %}
-                        <li class="list-group-item"><strong>{{keys}}</strong>: {{values}}</li>
-                    {% endfor %}
-                  </ul>
-                  <div class="card-body text-center">
-                    <button type="button" class="add btn-modal" value="{{index[0]}}" data-toggle="modal" data-target="#modal"
-                      style="min-width: 10rem; min-height: 3rem;"><span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al
-                      carrito</button>
-                  </div>
-                </div>
-              </div>
-              {% if index.append(index.pop() + 1) %}{% endif %}
-          {% endfor %}
-              <div class="modal fade" id="modal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="ModalLabel">Mi carrito</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span class="fas fa-times" aria-hidden="true"></span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="cont">
-                        <div class="tp-content">
-                          <span style="display: none;"></span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                style="border: none;">
+                <h4 class="fas fa-bars set-color"></h4>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link set-color" href="/">
+                            Home <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+                <form method="POST" class="form-inline my-2 my-lg-0">
+                    <input id="searchinput" name="searhing" class="form-control mr-sm-2" type="search" placeholder="Busca algo"
+                        aria-label="Search" oninput="offDisabledButton();">
+                    <button id="buscar" class="btnav-search btn-modal my-2 my-sm-0 p-2" type="submit" data-toggle="modal"
+                        data-target="#modal-1">Buscar</button>
+                </form>
+            </div>
+        </nav>
+
+        <section class="container-fluid">
+            <div class="row pt-3 container-data">
+                <!-- If does not exist any results, display this div -->
+                <div class="col-md-12 mt-5 error-message">
+                    <div class="container">
+                        <div class="error">
+                            <h1 class="display-1 far fa-frown"></h1>
+                            <h1>Error en la búsqueda</h1>
+                            <p class="card-text">Ups! parece que no hemos podido encontrar nada</p>
                         </div>
-                      </div>
                     </div>
-                    <div class="modal-footer" style="display: flex; justify-content: space-between">
-                      <p id="total">total: Gs. Precio</p>
-                      <button type="button" class="btn-modal">Finalizar pedido</button>
-                    </div>
-                  </div>
                 </div>
-              </div>
-              <button type="button" class="btn-flotante" data-toggle="modal" data-target="#modal"><span class="fas fa-shopping-cart"></span></button>
-      {% endif %}
-    </div>
-  </section>
-  <script>
-    //----------------------------------------------------
-    var datos = JSON.parse('{{datos | tojson | safe}}');
-    var nombre = JSON.parse('{{ nombre | tojson | safe }}');
-    var carritos = JSON.parse('{{ carrito | tojson | safe }}');
-    //----------------------------------------------------
+            </div>
 
-    var carrito = []
-    if(carritos.length > 0){ //Reasigamos los valores en una nueva lista ya que la enviada por el back está volteada (price primero, title después)
-      for(j=0; j < carritos.length; j++){
-        let prodTitle = Object.entries(carritos[j])[1][1];
-        let prodPrice = Object.entries(carritos[j])[0][1];
+            <!-- Carrito Modal -->
+            <div class="modal fade" id="modal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel">Mi carrito</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span class="fas fa-times" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer" style="display: flex; justify-content: space-between">
+                            <p id="total">total: Gs. Precio</p>
+                            <button type="button" class="btn-modal">Finalizar pedido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        carrito.push({
-          'title': prodTitle,
-          'price': prodPrice
-        });
-      }
-    }
+            <button type="button" class="btn-flotante" data-toggle="modal" data-target="#modal">
+                <span class="fas fa-shopping-cart"></span>
+            </button>
+        </section>
+    </main>
 
-    console.log("Enviados: ",carrito);
-
-    var button = document.getElementById("buscar");
-    button.disabled = true;
-
-    try{
-      let div = document.getElementsByClassName("empty")[0];
-      let padre = div.parentNode;
-      padre.removeChild(div);
-    } catch(error){
-      console.log("No existe aún emptyDiv");
-    }
-
-    function offDisabledButton(){
-      var value = document.getElementById("searchinput").value;
-
-      if(typeof value === 'string' && value != ""){
-        button.disabled = false; 
-      } else{
-        button.disabled = true;
-      }
-    }
-
-    function formatPrice(price){
-      price = price.replace("Gs", "")
-      price = price.trim()
-
-      let num = "";
-      for(i=0; i < price.length; i++){
-        if(price[i] != "."){
-          num = num+price[i];
+    <script>
+        window.onload = () => {
+            loadStyle("https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css")
+            .then(() => loadStyle("{{ url_for('static', filename='main.css') }}"))
+            .then(() => console.log("All the styles are loaded!"))
+            .catch(err => alert(err));
         }
-      }
-      return parseInt(num);
-    }
-
-    function putPoints(num){
-      let valorString = num.toString();
-      let len = valorString.length;
-      let c = 0;
-      let newString = "";
-      let valorFormat = "";
-
-      for(i=len; i >= 0; i=i-1){
-          c = c+1;
-          if(len == 1){
-              newString = valorString
-          }
-          if(c == 3){
-              cen = "."+valorString.slice(-3);
-              newString = cen+newString
-              valorString = valorString.slice(0, -3)
-
-              if(valorString.length == 1){
-                  newString = valorString+newString
-              }         
-              c = 0;
-          }
-      }
-
-      if(newString[0] == '.'){
-          newString = newString.slice(1);
-      }
-
-      return newString;
-    }
-
-    function putDataInLIst(conTitle, conPrice,i, index, contador){
-      let tagTitle = '<p class="'+(i+1)+'" style="display: inline-block">'+conTitle+'</p>'
-      let tagPrice = '<p style="display: inline-block color: rgb(5, 178, 190)"><strong>'+conPrice+'</strong></p>'
-      let del = '<button id="'+index+'" class="btn-del far fa-trash-alt" value="'+(i+1)+'"></button>'
-      let tpContent = '<div class="tp-content '+(i+1)+'">'+tagTitle+tagPrice+del+'<hr></hr></div>'
-
-      document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
-      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador+'</span>'
-    }
-
-    function findIndex(Array, title){
-      let i;
-      for(j=0; j < Array.length; j++){
-        if(title == Object.entries(Array[j])[0][1]){
-          i = Array.indexOf(Array[j]);
-          break;
-        }
-      }
-      return i;
-    }
-
-    var seleccionados = carrito || [] //si hay algo en el back.. traer
-    console.log("Guardado en la variabe seleccionados: ", seleccionados)
-    var productButtons = document.getElementsByClassName("add");
-    var total = 0;
-    var contador = 0;
-
-    setTimeout(function(){
-      if(seleccionados.length > 0){
-        console.log("Ingresé al condicional");
-        let index;
-        console.log("Longitud de los seleccionados después de cargar: ", seleccionados.length);
-
-        for(j=0; j < seleccionados.length; j++){
-          let titleAux = Object.entries(seleccionados[j])[0][1];
-          let priceAux = Object.entries(seleccionados[j])[1][1];
-          console.log("Establecí el valor para title y price");
-          index = "nulo"+j;
-  
-          i = findIndex(seleccionados, titleAux);
-          contador += 1;
-          putDataInLIst(titleAux, priceAux, i, index, contador);
-  
-          forPrice = priceAux;
-  
-          num = formatPrice(forPrice);
-          total = num+total;
-          totalFormat = putPoints(total);
-    
-          document.getElementById("total").innerHTML = "<strong>Total: Gs. "+totalFormat+"</strong>";
-        }
-      }
-    }, 100);
-
-
-    $('.add').click(function(){
-      contador += 1;
-      let index = $(this).val();
-      let title = nombre[index] 
-      let price = datos[index].Precio
-
-      function delDiv(){
-        if(seleccionados.length > 0){
-          try{
-            let div = document.getElementsByClassName("empty")[0];
-            let padre = div.parentNode;
-            padre.removeChild(div);
-          } catch(error){console.log("No existe aún emptyDiv")}
-        }
-      }
-
-      seleccionados.push({
-        'title': title,
-        'price': price
-      });
-
-      delDiv();
-
-      //console.log("Seleccionados list, antes de borrar: ", seleccionados);
-      i = findIndex(seleccionados, title);
-      //console.log("Longitud del contador: ", i);
-      
-      let conTitle = Object.entries(seleccionados[i])[0][1] //Object.entries devuelve una lista de keys y values dentro de otra lista
-      let conPrice = Object.entries(seleccionados[i])[1][1]
-
-      putDataInLIst(conTitle, conPrice, i, index, contador);
-
-      forPrice = Object.entries(seleccionados[i])[1][1]
-
-      num = formatPrice(forPrice);
-      total = num+total;
-      totalFormat = putPoints(total);
-
-      document.getElementById("total").innerHTML = "<strong>Total: Gs. "+totalFormat+"</strong>";
-
-      setTimeout(function(){
-        productButtons[index].disabled = true;
-        productButtons[index].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregado al carrito'
-      },100);
-
-      update();
-      
-    });
-
-    function update(){
-      $.ajax({
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(seleccionados),
-        dataType: 'json',
-        url: '/',
-        success: function(){
-          console.log("Enviado")
-        }
-      });
-    }
-
-    $(".btn-flotante").click(function(){
-      if(seleccionados.length == 0){
-        if(!!document.getElementsByClassName("empty") == false){
-          let tagImg = '<h4 class="fas fa-exclamation"></h4>'
-          let tagP = '<p>No tienes ningún artículo en tu carrito de compras.</p>'
-          let tpContentVoid = '<div class="tp-content empty" style="text-align: center;">'+tagImg+tagP+'</div>'
-          document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContentVoid);
-        }
-      } else{
-        console.log("El div existe")
-      }
-    });
-    
-    let indice;
-    $(document).on('click', '.btn-del', function(){
-      console.log("borrando")
-      let clase = $(this).val();
-
-      try{
-        indice = parseInt($(this).attr("id"));
-        console.log("Index del btn-del: ", indice);
-      } catch(error){}
-
-      let div = document.getElementsByClassName(clase)[0];
-      let padre = div.parentNode;
-
-      let titleOrg = document.getElementsByClassName(clase)[1];
-      let title = titleOrg.childNodes[0].textContent;
-
-      let index;
-      for(j=0; j < seleccionados.length; j++){
-        if(title == Object.entries(seleccionados[j])[0][1]){
-          index = seleccionados.indexOf(seleccionados[j]);
-          break;
-        }
-      }
-
-      try{
-        let forPrice = Object.entries(seleccionados[index])[1][1]; 
-      } catch(error){
-        let forPrice = Object.entries(seleccionados[index])[0][1];
-      }
-
-      num = formatPrice(forPrice);
-      num = total-num;
-      total = num;
-      numFormat = putPoints(total);
-
-      padre.removeChild(div);
-
-      seleccionados.splice(index, 1);
-      console.log(seleccionados)
-      contador = contador - 1;
-
-      if(seleccionados.length == 0){
-        let tagImg = '<h4 class="fas fa-exclamation"></h4>'
-        let tagP = '<p>No tienes ningún artículo en tu carrito de compras.</p>'
-        let tpContent = '<div class="tp-content empty" style="text-align: center;">'+tagImg+tagP+'</div>'
-        document.getElementsByClassName("cont")[0].insertAdjacentHTML('beforeend', tpContent);
-      }
-
-      document.getElementById("ModalLabel").innerHTML = 'Mi carrito <span id="contador">'+contador+'</span>';
-      document.getElementById("total").innerHTML = "<strong>Total: Gs. "+numFormat+"</strong>";
-
-      try{
-        productButtons[indice].disabled = false;
-        productButtons[indice].innerHTML = '<span class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al carrito';
-      } catch(error){}
-
-      update();
-
-    });
-
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    </script>
 </body>
 </html>
