@@ -5,6 +5,7 @@ from scrapy.crawler import CrawlerRunner
 from flask_socketio import SocketIO
 from scrapy import signals
 import crochet
+import json
 
 crochet.setup()
 
@@ -32,7 +33,7 @@ def render():
 
         scraper(search_url)
 
-    return render_template('new_home.html')
+    return render_template('home.html')
 
 
 @crochet.run_in_reactor
@@ -41,11 +42,17 @@ def scraper(url):
     runner.crawl(ScraperSpider, url=url)
 
 
-socket.on('event')
 def get_data(spider):
     data = spider.data
     socket.emit('Response', data)
 
+
+@socket.on('carrito')
+def get_carrito(data): 
+    carrito = data['carrito']
+
+    with open('data.json', 'w') as f:
+        json.dump(carrito, f, indent=4)
 
 if __name__ == '__main__':
     socket.run(app, host='0.0.0.0', debug=True)

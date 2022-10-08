@@ -13,7 +13,9 @@ socket.on('Response', res => {
     chargin.style.display = "none";
 
     mainDataContainer.innerHTML = ''; //Remove if exists data in the container
+    console.log("control antes del set")
     setData(res.reverse()); //Charge the new data
+    console.log("control después (socket.js:17)")
 
     mainContainer.style.display = "block";
 })

@@ -1,40 +1,40 @@
-const errorMessage = document.querySelector(".error-message");
-const mainDataContainer = document.querySelector(".container-data");
+const errorMessage = document.querySelector(".error-message")
+const mainDataContainer = document.querySelector(".container-data")
 
 const setData = (data) => {
     data.forEach(obj => {
-        let dataContainer = document.createElement("div");
-        dataContainer.className = "col-sm-3 mb-3";
+        let dataContainer = document.createElement("div")
+            dataContainer.className = "col-sm-3 mb-3"
 
-        let card = document.createElement("div");
-        card.className = "card";
+        let card = document.createElement("div")
+            card.className = "card"
 
-        let infoContainer = document.createElement("ul");
-        let info = Object.entries(obj.info);
+        let infoContainer = document.createElement("ul")
+        let info = Object.entries(obj.info)
 
-        infoContainer.className = "list-group list-group-flush";
+        infoContainer.className = "list-group list-group-flush"
 
         info.forEach(([property, value]) => {
-            let li = document.createElement("li");
-            li.className = "list-group-item";
-            li.innerHTML = `<strong>${property}</strong>:${value}`;
+            let li = document.createElement("li")
+            li.className = "list-group-item"
+            li.innerHTML = `<strong>${property}</strong>:${value}`
 
-            infoContainer.append(li);
+            infoContainer.append(li)
         })
 
-        let img = document.createElement("img");
-        img.className = "card-img-top";
-        img.src = obj.imgLink;
-        img.alt = "Card image cap";
+        let img = document.createElement("img")
+        img.className = "card-img-top"
+        img.src = obj.imgLink
+        img.alt = "Card image cap"
 
-        let card_title = document.createElement("div");
-        card_title.className = "card-body";
+        let cardTitle = document.createElement("div")
+        cardTitle.className = "card-body"
 
-        let title = document.createElement("h5");
-        title.className = "card-title";
-        title.innerText = obj.name;
+        let title = document.createElement("h5")
+        title.className = "card-title"
+        title.innerText = obj.name
 
-        card_title.append(title);
+        cardTitle.append(title)
 
         let footer = `
         <div class="card-body text-center">
@@ -43,12 +43,14 @@ const setData = (data) => {
                     class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al
                 carrito</button>
         </div>
-        `;
+        `
+
+        card.append(img)
+        card.append(cardTitle)
+        card.append(infoContainer)
         
-        [img, card_title, infoContainer].forEach(e => card.append(e));
-        
-        card.insertAdjacentHTML("beforeend", footer);
-        dataContainer.append(card);
-        mainDataContainer.append(dataContainer);
+        card.insertAdjacentHTML("beforeend", footer)
+        dataContainer.append(card)
+        mainDataContainer.append(dataContainer)
     })
 }
