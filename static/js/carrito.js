@@ -7,7 +7,10 @@ var buttons
 //Get HTML elements
 const modal = document.querySelector(".modal-content")
 const bubbleCounter = document.createElement("div")
+const [ metaElement ] = document.getElementsByName("request-method")
+
 bubbleCounter.className = "counter"
+const requestMethod = metaElement.attributes.item(1).value
 
 let modalHeader, modalBody, modalFooter
 
@@ -61,6 +64,8 @@ const getData = (button) => {
     let parentCard = button.parentElement.parentElement
     let productName = parentCard.childNodes[1].textContent
     let info = parentCard.childNodes[2]
+
+    productName = productName.replaceAll('"', "'")
 
     if(!info) return {} //Validation
 
@@ -126,4 +131,11 @@ function main() {
         })
 
     })
+
+    if(requestMethod === 'POST') {
+        const externalData = getExternalData()
+        carrito = [...externalData]
+        
+        externalData.forEach(product => chargeDataToModal(product))
+    }
 }

@@ -20,12 +20,24 @@ settings_for_runner = {
 runner = CrawlerRunner(settings_for_runner)
 base_url = "https://www.casanissei.com/py/informatica"
 
+def get_saved_data():
+    data = {}
+    try:
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        pass
+    
+    return data
+    
+
 @app.route('/', methods=['GET', 'POST'])
 def render():
     method = request.method
 
     if method == 'GET':
         scraper(base_url)
+        return render_template('home.html', method=method)
 
     elif method == 'POST':
         query = request.form['searhing'].replace(" ", "+")
@@ -33,7 +45,8 @@ def render():
 
         scraper(search_url)
 
-    return render_template('home.html')
+        data = get_saved_data()
+        return render_template('home.html', data=data, method=method)
 
 
 @crochet.run_in_reactor
