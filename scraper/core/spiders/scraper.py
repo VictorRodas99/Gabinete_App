@@ -17,7 +17,7 @@ class ScraperSpider(scrapy.Spider):
         products = response.css('ol.product-items li')
         products_links = products.css('a.product-item-link::attr(href)').getall()
 
-        max_long = 8
+        max_long = 20
         long_p_links = len(products_links)
         
         if long_p_links < max_long: max_long = long_p_links
