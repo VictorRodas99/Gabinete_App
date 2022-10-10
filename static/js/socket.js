@@ -2,6 +2,7 @@ const socket = io.connect(`http://${document.domain}:${location.port}`)
 const chargin = document.querySelector(".charging-section")
 const mainContainer = document.querySelector(".main-container")
 
+const sendCarrito = carrito => socket.emit('carrito', { carrito })
 
 socket.on('Response', res => {
     if(res === undefined || res.length === 0) {
