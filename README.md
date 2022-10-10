@@ -7,6 +7,7 @@ Proyecto donde se realiza una Página web de búsqueda de productos electrónico
 1. Versión de python 3.6 o superior
 2. Flask
 3. Scrapy
+4. xlsxwriter
 
 # Instrucciones para levantar el proyecto
 
