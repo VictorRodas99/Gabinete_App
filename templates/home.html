@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="request-method" content="{{ method }}">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
@@ -86,9 +85,9 @@
                         </div>
                         <div class="modal-body">
                         </div>
-                        <div class="modal-footer" style="display: flex; justify-content: space-between">
-                            <p id="total">total: Gs. Precio</p>
-                            <button type="button" class="btn-modal">Finalizar pedido</button>
+                        <div class="modal-footer">
+                            <p id="total"></p>
+                            <button type="button" class="btn-modal btn-excel">Convertir a excel</button>
                         </div>
                     </div>
                 </div>
@@ -107,11 +106,6 @@
             .then(() => console.log("All the styles are loaded!"))
             .catch(err => alert(err));
         }
-
-        function getExternalData() {
-            return JSON.parse('{{ data | default("") | tojson }}')
-        }
-        
     </script>
 </body>
 </html>

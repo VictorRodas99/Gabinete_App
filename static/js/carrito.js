@@ -3,9 +3,8 @@ var buttons = []
 var counter = 0
 
 const modal = document.querySelector(".modal-content")
+const toExcelButton = document.querySelector(".btn-excel")
 const bubbleCounter = document.createElement("div")
-const [ metaElement ] = document.getElementsByName("request-method")
-const requestMethod = metaElement.attributes.item(1).value
 
 const mainModalElements = [...modal.children].filter(e => e.className.includes("modal-"))
 const [ modalHeader, modalBody, modalFooter ] = mainModalElements
@@ -28,21 +27,28 @@ const waitButtons = setInterval(() => {
 
 
 function main() {
+    let externalData = localStorage.getItem('carrito')
+
+    toExcelButton.addEventListener('click', () => {
+        if(carrito.length < 0) return
+        carritoToExcel(carrito)
+    })
+
     buttons.forEach(button => {
         button.addEventListener('click', () => {
             const data = getProductData(button)
 
             if(data) {
-                sendCarrito(carrito)
+                data.total = getTotalPrice(carrito)
+                saveCarrito(carrito)
                 chargeDataToModal(data)
             }
         })
     })
 
-    if(requestMethod === 'POST') {
-        const externalData = getExternalData()
+    if(externalData) {
+        externalData = JSON.parse(externalData)
         carrito = [...externalData]
-        
         externalData.forEach(product => chargeDataToModal(product))
     }
 }

@@ -2,3 +2,4 @@ Flask==2.0.1
 flask-socketio==5.7.1
 scrapy==2.6.3
 crochet==2.0.0
+xlsxwriter

@@ -1,11 +1,12 @@
-from scraper.core.spiders.scraper import ScraperSpider
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
+from tools.scraper.core.spiders.scraper import ScraperSpider
+from tools.excel_writer import create_excel_file
 from scrapy.signalmanager import dispatcher
 from scrapy.crawler import CrawlerRunner
 from flask_socketio import SocketIO
 from scrapy import signals
+import requests
 import crochet
-import json
 
 crochet.setup()
 
@@ -19,34 +20,45 @@ settings_for_runner = {
 
 runner = CrawlerRunner(settings_for_runner)
 base_url = "https://www.casanissei.com/py/informatica"
+excel_path = "data/productos.xlsx"
 
-def get_saved_data():
-    data = {}
+def page_status():
     try:
-        with open('data.json', 'r') as f:
-            data = json.load(f)
-    except FileNotFoundError:
-        pass
+        code = requests.get(base_url).status_code
+    except requests.exceptions.ConnectionError:
+        code = 503
     
-    return data
-    
+    return code
 
 @app.route('/', methods=['GET', 'POST'])
 def render():
     method = request.method
 
     if method == 'GET':
-        scraper(base_url)
-        return render_template('home.html', method=method)
+        if page_status() < 400:
+            scraper(base_url)
+        else:
+            socket.emit('Response', {})
 
     elif method == 'POST':
         query = request.form['searhing'].replace(" ", "+")
         search_url = f"https://www.casanissei.com/py/catalogsearch/result/?q={query}"
 
-        scraper(search_url)
+        if page_status() < 400:
+            scraper(search_url)
+        else:
+            socket.emit('Response', {})
 
-        data = get_saved_data()
-        return render_template('home.html', data=data, method=method)
+    return render_template('home.html')
+
+
+@app.route('/file', methods=['GET'])
+def send_file():
+    try:
+        abs_path, filename = excel_path.split('/')
+        return send_from_directory(f'{abs_path}/', filename)
+    except FileNotFoundError:
+        return render_template('error.html'), 404
 
 
 @crochet.run_in_reactor
@@ -64,8 +76,14 @@ def get_data(spider):
 def get_carrito(data): 
     carrito = data['carrito']
 
-    with open('data.json', 'w') as f:
-        json.dump(carrito, f, indent=4)
+    for product in carrito:
+        del product['total']
+
+    headers = ['Nombre', 'Precio']
+
+    create_excel_file(excel_path, headers, carrito)
+    socket.emit('carrito', { 'url': 'file' })
+
 
 if __name__ == '__main__':
     socket.run(app, host='0.0.0.0', debug=True)

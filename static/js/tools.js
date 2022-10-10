@@ -1,3 +1,9 @@
+// local storage operations for 'carrito'
+const saveCarrito = currentCarrito => {
+    localStorage.setItem('carrito', JSON.stringify(currentCarrito))
+}
+
+
 // data treatment
 const getPriceFormat = price => {
     try {
@@ -35,14 +41,16 @@ const getProductData = button => {
     const card = button.parentElement.parentElement
     const [ img, productContainer, details ] = card.childNodes
     const productName = (productContainer.textContent).replaceAll('"', "'")
-    let data
 
     const { isCorrect, price } = validateData(details)
 
-    if(isCorrect) data = { productName, price }
-    else return {}
+    if(!isCorrect) return {}
+    
+    const data = { productName, price }
 
     carrito.push(data)
+    saveCarrito(carrito)
+
     return data
 }
 
@@ -50,6 +58,7 @@ const getProductData = button => {
 // modal functions
 const eventDump = () => {
     const dumps = document.getElementsByClassName("trash")
+    const totalPriceContainer = document.querySelector("#total")
 
     Array.from(dumps).forEach((button, index) => {
         button.addEventListener('click', () => {
@@ -58,11 +67,22 @@ const eventDump = () => {
             button.parentElement.parentElement.innerHTML = ''
             counter -= 1;
             bubbleCounter.innerText = counter
-
-            sendCarrito(carrito)
+            
+            const newTotal = getTotalPrice(carrito)
+            totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(newTotal)}`
+            saveCarrito(carrito)
         })
     })
 }
+
+const getTotalPrice = carrito => {
+    let totalPrice = 0
+    for(const product of carrito) {
+        totalPrice += product.price
+    }
+
+    return totalPrice
+} 
 
 const chargeDataToModal = data => {
     counter += 1
@@ -73,6 +93,7 @@ const chargeDataToModal = data => {
     const subContainer = document.createElement("div")
     const price = document.createElement("p")
     const trashButton = document.createElement("button")
+    const totalPriceContainer = document.querySelector("#total")
 
     subContainer.className = "modal__subcontainer"
 
@@ -81,6 +102,7 @@ const chargeDataToModal = data => {
 
     name.innerText = data.productName
     price.innerText = `Gs. ${getFinalFormat(data.price)}`
+    totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(data.total)}`
 
     dataContainer.append(name)
     subContainer.append(price, trashButton)

@@ -3,9 +3,11 @@
 /* Variables */
 :root {
     --primary-color: #05b2be;
+    --secondary-color: #28a745;
     --black: #0000001a;
 
     --primary-border-style: 1px solid var(--primary-color);
+    --secondary-border-style: 1px solid var(--secondary-color);
     --border-style-radius: 15px;
     --top-index: 50;
 }
@@ -76,6 +78,7 @@ body {
 .set-color { color: var(--primary-color) }
 
 .btnav-search {
+    border: var(--primary-border-style);
     color: #ffff;
     border: none;
     border-radius: 5px;
@@ -120,18 +123,32 @@ body {
 }
 
 .btn-modal {
-    border: var(--primary-border-style);
     padding: 0.8rem;
     color: #ffff;
     border: none;
     border-radius: 5px;
-    background: var(--primary-color);
     transition: 0.5s;
 }
 
-.btn-modal:active, .btn-modal:hover {
-    border: var(--primary-border-style);
+.btn-modal:active, .btn-modal:hover { background: transparent }
+
+.btn-excel {
+    border: var(--secondary-border-style);
+    background: var(--secondary-color);
+}
+
+.btn-excel:active, .btn-excel:hover {
+    border: var(--secondary-border-style);
+    color: var(--secondary-color);
+}
+
+.add {
+    background: var(--primary-color);
+}
+
+.add:active, .add:hover {
     color: var(--primary-color);
+    border: var(--primary-border-style);
     background: transparent;
 }
 
@@ -164,6 +181,10 @@ body {
     cursor:pointer;
 }
 
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
 
 
 /* Floating button */
