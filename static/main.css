@@ -147,13 +147,21 @@ body {
     border-radius: 20px;
 }
 
+.modal__subcontainer {
+    padding: .5rem;
+    border-bottom: var(--primary-border-style);
+    margin-bottom: .2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .price { font-style: bold }
 
 .trash {
     background: none;
     border:none;
     cursor:pointer;
-    display: inline-block;
 }
 
 

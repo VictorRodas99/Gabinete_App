@@ -8,7 +8,6 @@ const createElements = () => {
     const img = document.createElement("img")
     const cardTitle = document.createElement("div")
     const title = document.createElement("h5")
-    const items = document.createElement("li")
     
     const footer = `
     <div class="card-body text-center">
@@ -25,12 +24,11 @@ const createElements = () => {
     img.alt = "Card image cap"
     cardTitle.className = "card-body"
     title.className = "card-title"
-    items.className = "list-group-item"
 
     return [
         dataContainer, card, infoContainer,
         img, cardTitle, title,
-        footer, items
+        footer
     ]
 }
 
@@ -40,11 +38,14 @@ const setData = (data) => {
         const { imgLink, name } = product
         const [
             dataContainer, card, infoContainer,
-            img, cardTitle, title, footer, items
+            img, cardTitle, title, footer
         ] = createElements()
         
         info.forEach(([property, value]) => {
+            const items = document.createElement("li")
+            items.className = "list-group-item" 
             items.innerHTML = `<strong>${property}</strong>:${value}`
+
             infoContainer.append(items)
         })
 

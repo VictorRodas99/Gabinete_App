@@ -55,7 +55,7 @@ const eventDump = () => {
         button.addEventListener('click', () => {
             carrito.splice(index, 1)
 
-            button.parentElement.innerHTML = ''
+            button.parentElement.parentElement.innerHTML = ''
             counter -= 1;
             bubbleCounter.innerText = counter
 
@@ -68,10 +68,13 @@ const chargeDataToModal = data => {
     counter += 1
     bubbleCounter.innerText = counter
 
-    let dataContainer = document.createElement("div")
-    let name = document.createElement("p")
-    let price = document.createElement("p")
-    let trashButton = document.createElement("button")
+    const dataContainer = document.createElement("div")
+    const name = document.createElement("p")
+    const subContainer = document.createElement("div")
+    const price = document.createElement("p")
+    const trashButton = document.createElement("button")
+
+    subContainer.className = "modal__subcontainer"
 
     trashButton.className = "trash far fa-trash-alt"
     price.className = "price"
@@ -80,8 +83,8 @@ const chargeDataToModal = data => {
     price.innerText = `Gs. ${getFinalFormat(data.price)}`
 
     dataContainer.append(name)
-    dataContainer.append(price)
-    dataContainer.append(trashButton)
+    subContainer.append(price, trashButton)
+    dataContainer.append(subContainer)
 
     modalBody.append(dataContainer)
     eventDump()
