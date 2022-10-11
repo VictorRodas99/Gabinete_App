@@ -1,42 +1,62 @@
-// local storage operations for 'carrito'
+/**
+ * Saves the array in localStorage
+ * @param {Array<{productName: String, price: Number}>} currentCarrito 
+ */
 const saveCarrito = currentCarrito => {
-    localStorage.setItem('carrito', JSON.stringify(currentCarrito))
-}
-
-
-// data treatment
-const getPriceFormat = price => {
     try {
-        const indexStart = price.indexOf(':')
-        price = price.slice((indexStart + 1), price.length)
-        price = price.replace("PYG", '').trim()
-        price = parseInt(price.replaceAll('.', ''))
-
-    } catch(error) {
+        localStorage.setItem('carrito', JSON.stringify(currentCarrito))
+    } catch (error) {
         console.error(error)
-        price = 0
     }
-
-    return price
 }
 
+
+/**
+ * Returns the price without any character
+ * @param {String} price 
+ * @returns {Number}
+ */
+const getPriceFormat = price => {
+    const priceNumber = parseInt(price.replace(/\D/g, ''))
+    return isNaN(priceNumber) ? 0 : priceNumber
+}
+
+
+/**
+ * @param {Number} price 
+ * @returns {String} The price with thousand separator, the character separator is a period (.)
+ */
 const getFinalFormat = price => price.toLocaleString('de-DE')
 
+
+/**
+ * Validates if exists data in the Node element,
+ * and if the product price inside data is a correct number
+ * @param {Node} details
+ * @returns { {isCorrect: Boolean, price: Number} }
+ */
 const validateData = details => {
     const defaultReturn = { isCorrect: false, price: 0 }
+
+    if(!details) return defaultReturn
 
     let price = details.childNodes[0].textContent
     price = getPriceFormat(price)
 
     if(!price) return defaultReturn
-    if(!details) return defaultReturn
-
+    
     return {
         isCorrect: true,
         price
     }
 }
 
+
+/**
+ * Returns and empty object if the data inside Element wasn't valid
+ * @param {Element} button 
+ * @returns { {productName: String, price: Number} | {}}
+ */
 const getProductData = button => {
     const card = button.parentElement.parentElement
     const [ img, productContainer, details ] = card.childNodes
@@ -55,7 +75,11 @@ const getProductData = button => {
 }
 
 
-// modal functions
+/* Modal functions */
+
+/**
+ * Puts a click event for all the dumpster buttons
+ */
 const eventDump = () => {
     const dumps = document.getElementsByClassName("trash")
     const totalPriceContainer = document.querySelector("#total")
@@ -64,7 +88,10 @@ const eventDump = () => {
         button.addEventListener('click', () => {
             carrito.splice(index, 1)
 
-            button.parentElement.parentElement.innerHTML = ''
+            const dataContainer = button.parentElement.parentElement
+            dataContainer.innerHTML = ''
+            modalBody.removeChild(dataContainer)
+
             counter -= 1;
             bubbleCounter.innerText = counter
             
@@ -75,6 +102,11 @@ const eventDump = () => {
     })
 }
 
+
+/**
+ * @param {Array<{productName: String, price: Number}>} carrito 
+ * @returns {Number} The sum of all product prices
+ */
 const getTotalPrice = carrito => {
     let totalPrice = 0
     for(const product of carrito) {
@@ -82,8 +114,12 @@ const getTotalPrice = carrito => {
     }
 
     return totalPrice
-} 
+}
 
+
+/**
+ * @param { {productName: String, price: Number, total: Number} } data 
+ */
 const chargeDataToModal = data => {
     counter += 1
     bubbleCounter.innerText = counter
@@ -95,6 +131,7 @@ const chargeDataToModal = data => {
     const trashButton = document.createElement("button")
     const totalPriceContainer = document.querySelector("#total")
 
+    dataContainer.className = "modal__data-container"
     subContainer.className = "modal__subcontainer"
 
     trashButton.className = "trash far fa-trash-alt"
