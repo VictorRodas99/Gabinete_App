@@ -2,13 +2,7 @@ const socket = io.connect(`http://${document.domain}:${location.port}`)
 const chargin = document.querySelector(".charging-section")
 const mainContainer = document.querySelector(".main-container")
 
-
-/**
- * Emits an event for the backend to receive the data and transform it into an xlsx file
- * @param {Array<{productName: String, price: Number}>} carrito
- */
 const carritoToExcel = carrito => socket.emit('carrito', { carrito })
-
 
 socket.on('carrito', data => {
   const currentURL = window.location.href
