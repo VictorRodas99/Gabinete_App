@@ -19,7 +19,7 @@ settings_for_runner = {
 }
 
 runner = CrawlerRunner(settings_for_runner)
-base_url = "https://www.casanissei.com/py/informatica"
+base_url = "http://www.casanissei.com/py/informatica"
 excel_path = "data/productos.xlsx"
 
 def page_status():
@@ -35,10 +35,12 @@ def render():
     method = request.method
 
     if method == 'GET':
-        if page_status() < 400:
+        code = page_status()
+        if code < 400:
             scraper(base_url)
         else:
             socket.emit('Response', {})
+            return render_template("temporal_debug.html", code=code)
 
     elif method == 'POST':
         query = request.form['searhing'].replace(" ", "+")
@@ -49,7 +51,12 @@ def render():
         else:
             socket.emit('Response', {})
 
-    return render_template('home.html')
+    return render_template('new-home.html')
+
+
+@app.route('/product', methods=['GET', 'POST'])
+def render_product():
+    return render_template('product.html')
 
 
 @app.route('/file', methods=['GET'])

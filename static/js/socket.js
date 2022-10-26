@@ -13,6 +13,7 @@ socket.on('carrito', data => {
 })
 
 socket.on('Response', res => {
+    console.log(res)
     if(res === undefined || res.length === 0) {
       errorMessage.style.display = "block"
       return

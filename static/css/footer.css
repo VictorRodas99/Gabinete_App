@@ -1,0 +1,29 @@
+footer {
+    border-top: 3px solid var(--primary-color);
+    font-size: .9rem;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 7rem;
+    padding-bottom: 1rem;
+    background-color: var(--dark-color);
+    color: #fff;
+}
+
+
+.footer-messsage {
+    font-style: italic;
+    display: flex;
+    align-items: center;
+}
+
+#heart {
+    font-weight: bold;
+    color: #f72424;
+}
+
+.footer-message__name {
+    font-weight: bold;
+    color: var(--primary-color);
+    text-decoration: none;
+}

@@ -1,65 +1,70 @@
 const errorMessage = document.querySelector(".error-message")
-const mainDataContainer = document.querySelector(".container-data")
+const mainDataContainer = document.querySelector(".product-section__products-container")
 
 const createElements = () => {
-    const dataContainer = document.createElement("div")
     const card = document.createElement("div")
-    const infoContainer = document.createElement("ul")
+    const cardHeader = document.createElement("div")
     const img = document.createElement("img")
-    const cardTitle = document.createElement("div")
-    const title = document.createElement("h5")
-    
-    const footer = `
-    <div class="card-body text-center">
-        <button type="button" class="add btn-modal" value="pending" data-toggle="modal" data-target="#modal"
-            style="min-width: 10rem; min-height: 3rem;"><span
-                class="fas fa-shopping-cart"></span>&nbsp;&nbsp;Agregar al
-            carrito</button>
-    </div>
-    `
-    dataContainer.className = "col-sm-3 mb-3"
-    card.className = "card"
-    infoContainer.className = "list-group list-group-flush"
-    img.className = "card-img-top"
-    img.alt = "Card image cap"
-    cardTitle.className = "card-body"
-    title.className = "card-title"
+    const cardBody = document.createElement("div")
+    const productName = document.createElement("h2")
+    const productPrice = document.createElement("p")
+    const cardFooter = document.createElement("div")
 
-    return [
-        dataContainer, card, infoContainer,
-        img, cardTitle, title,
-        footer
-    ]
+    card.className = "products-container__product"
+    cardHeader.className = "product-header"
+    cardBody.className = "product-body"
+    productName.className = "product-body__name"
+    productPrice.className ="product-body__price"
+    cardFooter.className = "product-footer"
+
+    cardFooter.innerHTML = `
+        <div class="product-footer__item">
+            <button class="material-symbols-outlined reset-button">add_shopping_cart</button>
+            <div class="item__message">Agregar a carrito</div>
+        </div>
+        <div class="product-footer__item">
+            <a href="/product" class="material-symbols-outlined reset-a">visibility</a>
+            <div class="item__message">Ver producto</div>
+        </div>
+    `
+
+    return {
+        card, cardHeader, img,
+        cardBody, productName, productPrice,
+        cardFooter,  
+    }
+
 }
 
-const setData = (data) => {
+const setData = data => {
     data.forEach(product => {
-        const info = Object.entries(product.info)
+        // const info = Object.entries(product.info)
+        const price = product.info.Precio
         const { imgLink, name } = product
-        const [
-            dataContainer, card, infoContainer,
-            img, cardTitle, title, footer
-        ] = createElements()
-        
-        info.forEach(([property, value]) => {
-            const items = document.createElement("li")
-            items.className = "list-group-item" 
-            items.innerHTML = `<strong>${property}</strong>:${value}`
 
-            infoContainer.append(items)
-        })
+        const {
+            card, cardHeader, img,
+            cardBody, productName, productPrice,
+            cardFooter
+        } = createElements()
+        
+        // info.forEach(([property, value]) => {
+        //     const items = document.createElement("li")
+        //     items.className = "list-group-item" 
+        //     items.innerHTML = `<strong>${property}</strong>:${value}`
+
+        //     infoContainer.append(items)
+        // })
 
         img.src = imgLink
-        title.innerText = name
 
-        cardTitle.append(title)
+        productName.textContent = name
+        productPrice.textContent = price
 
-        card.append(img)
-        card.append(cardTitle)
-        card.append(infoContainer)
-        card.insertAdjacentHTML("beforeend", footer)
-
-        dataContainer.append(card)
-        mainDataContainer.append(dataContainer)
+        cardHeader.append(img)
+        cardBody.append(productName, productPrice)
+        card.append(cardHeader, cardBody, cardFooter)
+        mainDataContainer.append(card)
+        
     })
 }
