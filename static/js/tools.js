@@ -6,30 +6,16 @@ const saveCarrito = currentCarrito => {
 
 // data treatment
 const getPriceFormat = price => {
-    try {
-        const indexStart = price.indexOf(':')
-        price = price.slice((indexStart + 1), price.length)
-        price = price.replace("PYG", '').trim()
-        price = parseInt(price.replaceAll('.', ''))
-
-    } catch(error) {
-        console.error(error)
-        price = 0
-    }
-
-    return price
+    const priceNumber = Number(price.replace(/\D/g, ''))
+    return isNaN(priceNumber) ? 0 : priceNumber
 }
 
 const getFinalFormat = price => price.toLocaleString('de-DE')
 
-const validateData = details => {
-    const defaultReturn = { isCorrect: false, price: 0 }
-
-    let price = details.childNodes[0].textContent
+const validateData = price => {
     price = getPriceFormat(price)
 
-    if(!price) return defaultReturn
-    if(!details) return defaultReturn
+    if(!price) return { isCorrect: false, price: 0 }
 
     return {
         isCorrect: true,
@@ -38,15 +24,17 @@ const validateData = details => {
 }
 
 const getProductData = button => {
-    const card = button.parentElement.parentElement
-    const [ img, productContainer, details ] = card.childNodes
-    const productName = (productContainer.textContent).replaceAll('"', "'")
-
-    const { isCorrect, price } = validateData(details)
+    const card =  button.closest(".products-container__product")
+    const [ cardHeader, cardBody ] = card.childNodes
+    const [ dirtyName, dirtyPrice] = cardBody.childNodes
+    const [ img ] = cardHeader.childNodes
+ 
+    const productName = (dirtyName.textContent).replaceAll('"', "'")
+    const { isCorrect, price } = validateData(dirtyPrice.textContent)
 
     if(!isCorrect) return {}
     
-    const data = { productName, price }
+    const data = { productName, price, img: img.src }
 
     carrito.push(data)
     saveCarrito(carrito)
@@ -57,22 +45,23 @@ const getProductData = button => {
 
 // modal functions
 const eventDump = () => {
-    const dumps = document.getElementsByClassName("trash")
-    const totalPriceContainer = document.querySelector("#total")
+    // const dumps = document.getElementsByClassName("trash")
+    // const totalPriceContainer = document.querySelector("#total")
 
-    Array.from(dumps).forEach((button, index) => {
-        button.addEventListener('click', () => {
-            carrito.splice(index, 1)
+    // Array.from(dumps).forEach((button, index) => {
+    //     button.addEventListener('click', () => {
+    //         carrito.splice(index, 1)
 
-            button.parentElement.parentElement.innerHTML = ''
-            counter -= 1;
-            bubbleCounter.innerText = counter
+    //         button.parentElement.parentElement.innerHTML = ''
+    //         counter -= 1;
+    //         bubbleCounter.innerText = counter
             
-            const newTotal = getTotalPrice(carrito)
-            totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(newTotal)}`
-            saveCarrito(carrito)
-        })
-    })
+    //         const newTotal = getTotalPrice(carrito)
+    //         totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(newTotal)}`
+    //         saveCarrito(carrito)
+    //     })
+    // })
+    console.log("agregado")
 }
 
 const getTotalPrice = carrito => {
@@ -84,30 +73,59 @@ const getTotalPrice = carrito => {
     return totalPrice
 } 
 
-const chargeDataToModal = data => {
-    counter += 1
-    bubbleCounter.innerText = counter
+const chargeDataToModal = (data, counter) => {
+    productCounter.innerText = 
+        counter === 1
+        ? `${counter} item`
+        : `${counter} items`
 
-    const dataContainer = document.createElement("div")
+    const bodyCard = document.querySelector(".shopping-cart__body")
+
+    const bodyProduct = document.createElement("div")
+    const imgContainer = document.createElement("div")
+    const img = document.createElement("img")
+
+    const productDetails = document.createElement("div")
     const name = document.createElement("p")
-    const subContainer = document.createElement("div")
+
+    const counterContainer = document.createElement("div")
+    const priceContainer = document.createElement("div")
     const price = document.createElement("p")
-    const trashButton = document.createElement("button")
-    const totalPriceContainer = document.querySelector("#total")
 
-    subContainer.className = "modal__subcontainer"
+    const specificCounter = document.createElement("p")
+    const trashContainer = document.createElement("div")
+    const trashButton = document.createElement("span")
 
-    trashButton.className = "trash far fa-trash-alt"
-    price.className = "price"
+    bodyProduct.className = "body__product"
+    imgContainer.className = "product-img"
+    productDetails.className = "product-details"
+    counterContainer.className = "product-specific-counter"
+    priceContainer.className = "product-price"
+    trashContainer.className = "product-trash"
 
+
+    img.src = data.img
+    img.alt = "cart-product"
+
+    name.id = "details__product-name"
     name.innerText = data.productName
+
+    specificCounter.innerText = 2 //temporal
+
     price.innerText = `Gs. ${getFinalFormat(data.price)}`
-    totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(data.total)}`
 
-    dataContainer.append(name)
-    subContainer.append(price, trashButton)
-    dataContainer.append(subContainer)
+    trashButton.className = "material-symbols-outlined"
+    trashButton.innerText = "delete"
 
-    modalBody.append(dataContainer)
+    imgContainer.append(img)
+    productDetails.append(name)
+    counterContainer.append(specificCounter)
+    priceContainer.append(price)
+    trashContainer.append(trashButton)
+
+    bodyProduct.append(imgContainer, productDetails,
+            counterContainer, priceContainer, trashContainer)
+    
+    bodyCard.append(bodyProduct)
     eventDump()
 }

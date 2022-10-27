@@ -95,11 +95,10 @@
 
 #details__product-name {
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: .9rem;
 }
 
 .product-details > p {
-    line-height: 0; 
     margin: 0;
 }
 

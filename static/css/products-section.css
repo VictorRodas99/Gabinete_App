@@ -72,7 +72,7 @@
     position: relative;
 }
 
-.product-footer__item > button {
+.product-footer__item > .item__button {
     cursor: pointer;
     color: #000;
     padding: 7px;
@@ -81,7 +81,7 @@
     transition: all .3s ease;
 }
 
-.product-footer__item > button:hover {
+.product-footer__item > .item__button:hover {
     color: var(--primary-color);
     background-color: #e7e7e74d;
 }

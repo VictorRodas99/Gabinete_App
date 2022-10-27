@@ -19,11 +19,11 @@ const createElements = () => {
 
     cardFooter.innerHTML = `
         <div class="product-footer__item">
-            <button class="material-symbols-outlined reset-button">add_shopping_cart</button>
+            <button class="add material-symbols-outlined reset-button item__button">add_shopping_cart</button>
             <div class="item__message">Agregar a carrito</div>
         </div>
         <div class="product-footer__item">
-            <a href="/product" class="material-symbols-outlined reset-a">visibility</a>
+            <a href="/product" class="material-symbols-outlined reset-a item__button">visibility</a>
             <div class="item__message">Ver producto</div>
         </div>
     `

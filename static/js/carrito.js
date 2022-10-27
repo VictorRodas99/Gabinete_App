@@ -1,17 +1,13 @@
 var carrito = []
 var buttons = []
-var counter = 0
 
-const modal = document.querySelector(".modal-content")
-const toExcelButton = document.querySelector(".btn-excel")
-const bubbleCounter = document.createElement("div")
 
-const mainModalElements = [...modal.children].filter(e => e.className.includes("modal-"))
+const modal = document.querySelector(".cart-main-container")
+const toExcelButton = document.querySelector("#footer__button-save")
+const productCounter = document.querySelector("#header__counter")
+
+const mainModalElements = [...modal.children].filter(e => e.className.includes("shopping-cart__"))
 const [ modalHeader, modalBody, modalFooter ] = mainModalElements
-const [ modalTitle ] = modalHeader.children
-
-bubbleCounter.className = "counter"
-modalTitle.append(bubbleCounter)
 
 
 const waitButtons = setInterval(() => {
@@ -38,10 +34,10 @@ function main() {
         button.addEventListener('click', () => {
             const data = getProductData(button)
 
-            if(data) {
+            if(Object.keys(data).length) {
                 data.total = getTotalPrice(carrito)
                 saveCarrito(carrito)
-                chargeDataToModal(data)
+                chargeDataToModal(data, carrito.length + 1)
             }
         })
     })
@@ -49,6 +45,6 @@ function main() {
     if(externalData) {
         externalData = JSON.parse(externalData)
         carrito = [...externalData]
-        externalData.forEach(product => chargeDataToModal(product))
+        externalData.forEach((product, counter) => chargeDataToModal(product, counter + 1))
     }
 }

@@ -23,7 +23,7 @@
 
     {% macro head_two_scripts() %}
         <script src="{{ url_for('static', filename='js/tools.js') }}" defer></script>
-        <!-- <script src="{{ url_for('static', filename='js/carrito.js') }}" defer></script> -->
+        <script src="{{ url_for('static', filename='js/carrito.js') }}" defer></script>
         <script src="{{ url_for('static', filename='js/toggler.js') }}" defer></script>
         
         <title>Cargando...</title>
@@ -50,8 +50,8 @@
                     <h1 class="logo-container__title">CompuShop</h1>
                 </div>
                 <div class="navigation__input-container">
-                    <form>
-                        <input type="search" id="search-input" class="reset-input" placeholder="Busca aquí...">
+                    <form method="POST">
+                        <input type="search" id="search-input" name="searching" class="reset-input" placeholder="Busca aquí...">
                         <button type="submit" class="input-container__button-search reset-button">Buscar</button>
                     </form>
                 </div>
@@ -82,46 +82,9 @@
             <section class="cart-main-container">
                 <div class="shopping-cart__header">
                     <h1 id="header__title">Shopping cart</h1>
-                    <p id="header__counter">3 items</p>
+                    <p id="header__counter"></p>
                 </div>
-                <div class="shopping-cart__body">
-                    <div class="body__product">
-                        <div class="product-img">
-                            <img src="./imgs/product01.png" alt="cart-product">
-                        </div>
-                        <div class="product-details">
-                            <p id="details__product-name">Product name</p>
-                            <p id="details__other">Some detail</p>
-                        </div>
-                        <div class="product-specific-counter">
-                            <p>2</p>
-                        </div>
-                        <div class="product-price">
-                            <p>Gs. 1.500.000</p>
-                        </div>
-                        <div class="product-trash">
-                            <span class="material-symbols-outlined">delete</span>
-                        </div>
-                    </div>
-                    <div class="body__product">
-                        <div class="product-img">
-                            <img src="./imgs/product01.png" alt="cart-product">
-                        </div>
-                        <div class="product-details">
-                            <p id="details__product-name">Product name</p>
-                            <p id="details__other">Some detail</p>
-                        </div>
-                        <div class="product-specific-counter">
-                            <p>2</p>
-                        </div>
-                        <div class="product-price">
-                            <p>Gs. 1.500.000</p>
-                        </div>
-                        <div class="product-trash">
-                            <span class="material-symbols-outlined">delete</span>
-                        </div>
-                    </div>
-                </div>
+                <div class="shopping-cart__body"></div>
                 <div class="shopping-cart__footer">
                     <div class="footer-item sort-item">
                         <p>Ordenar por: </p>

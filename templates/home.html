@@ -1,111 +1,34 @@
+{% import 'base.html' as b %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ b.head_one() }}
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <!-- ----------- -->    
-
-    <!-- Scripts -->
+    <!-- javascript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous" defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ url_for('static', filename='js/loadStyles.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/render.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/socket.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/tools.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/carrito.js') }}" defer></script>
-    <!-- ------- -->
-
-    <title>Cargando...</title>
+    {{ b.head_two_scripts() }}
+    <!--  -->
 </head>
 <body>
-    <section class="charging-section container text-center pt-5">
-        <div class="charging-container">
-            <h2 class="charging-text">Cargando...</h2>
-        </div>
+    {{ b.charging_section() }}
+
+    <section class="main-container">
+        {{ b.header() }}
+        {{ b.menu() }}
+    
+        <main class="product-section">
+            <h1 class="product-section__title">Productos</h1>
+            <div class="product-section__products-container">
+            </div>
+            <button class="shopping-cart-button">
+                <span class="material-symbols-outlined">shopping_cart</span>
+            </button>
+        </main>
+
+        {{ b.shopping_cart() }}
+        {{ b.footer() }}
     </section>
-
-    <main class="main-container">
-        <nav class="navbar navbar-expand-lg">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-laptop set-color"></i>
-            </a>
-            <div class="title text-center p-1">
-                <h2>CompuShop</h2>
-            </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
-                style="border: none;">
-                <h4 class="fas fa-bars set-color"></h4>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link set-color" href="/">
-                            Home <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                </ul>
-                <form method="POST" class="form-inline my-2 my-lg-0">
-                    <input id="searchinput" name="searhing" class="form-control mr-sm-2" type="search" placeholder="Busca algo"
-                        aria-label="Search" oninput="offDisabledButton();">
-                    <button id="buscar" class="btnav-search btn-modal my-2 my-sm-0 p-2" type="submit" data-toggle="modal"
-                        data-target="#modal-1">Buscar</button>
-                </form>
-            </div>
-        </nav>
-
-        <section class="container-fluid">
-            <div class="row pt-3 container-data">
-                <!-- If does not exist any results, display this div -->
-                <div class="col-md-12 mt-5 error-message">
-                    <div class="container">
-                        <div class="error">
-                            <h1 class="display-1 far fa-frown"></h1>
-                            <h1>Error en la búsqueda</h1>
-                            <p class="card-text">Ups! parece que no hemos podido encontrar nada</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Carrito Modal -->
-            <div class="modal fade" id="modal" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ModalLabel">Mi carrito</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span class="fas fa-times" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                        </div>
-                        <div class="modal-footer">
-                            <p id="total"></p>
-                            <button type="button" class="btn-modal btn-excel">Convertir a excel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button type="button" class="btn-flotante" data-toggle="modal" data-target="#modal">
-                <span class="fas fa-shopping-cart"></span>
-            </button>
-        </section>
-    </main>
-
-    <script>
-        window.onload = () => {
-            loadStyle("https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css")
-            .then(() => loadStyle("{{ url_for('static', filename='main.css') }}"))
-            .then(() => console.log("All the styles are loaded!"))
-            .catch(err => alert(err));
-        }
-    </script>
 </body>
 </html>
