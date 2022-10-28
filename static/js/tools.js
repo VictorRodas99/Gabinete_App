@@ -1,17 +1,38 @@
-// local storage operations for 'carrito'
-const saveCarrito = currentCarrito => {
-    localStorage.setItem('carrito', JSON.stringify(currentCarrito))
+/**
+ * Saves the array in localStorage
+ * @param {Array<{productName: string, price: number}>} currentCarrito 
+ */
+ const saveCarrito = currentCarrito => {
+    try {
+        localStorage.setItem('carrito', JSON.stringify(currentCarrito))
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 
-// data treatment
+/**
+ * Returns the price without any character
+ * @param {string} price 
+ * @returns {number}
+ */
 const getPriceFormat = price => {
     const priceNumber = Number(price.replace(/\D/g, ''))
     return isNaN(priceNumber) ? 0 : priceNumber
 }
 
+
+/**
+ * @param {number} price 
+ * @returns {string} The price with thousand separator, the character separator is a period (.)
+ */
 const getFinalFormat = price => price.toLocaleString('de-DE')
 
+
+/**
+ * @param {string} price
+ * @returns { {isCorrect: boolean, price: number} }
+ */
 const validateData = price => {
     price = getPriceFormat(price)
 
@@ -23,6 +44,12 @@ const validateData = price => {
     }
 }
 
+
+/**
+ * Returns an empty object if the data inside Element wasn't valid
+ * @param {Element} button 
+ * @returns { {productName: string, price: number, img: string} | {}}
+ */
 const getProductData = button => {
     const card =  button.closest(".products-container__product")
     const [ cardHeader, cardBody ] = card.childNodes
@@ -43,27 +70,36 @@ const getProductData = button => {
 }
 
 
-// modal functions
+/* Modal functions */
+
+/**
+ * Puts a click event for all the dumpster buttons
+ */
 const eventDump = () => {
-    // const dumps = document.getElementsByClassName("trash")
-    // const totalPriceContainer = document.querySelector("#total")
+    const dumps = document.querySelectorAll(".product-trash > span")
+    const totalPriceContainer = document.querySelector("#header__counter")
 
-    // Array.from(dumps).forEach((button, index) => {
-    //     button.addEventListener('click', () => {
-    //         carrito.splice(index, 1)
+    const getProductName = container => {
+        const siblings = container.parentElement.children
+        const [ nameContainer ] = [...siblings].filter(element => element.className === "product-details")
+        const productName = nameContainer.firstChild.textContent
 
-    //         button.parentElement.parentElement.innerHTML = ''
-    //         counter -= 1;
-    //         bubbleCounter.innerText = counter
-            
-    //         const newTotal = getTotalPrice(carrito)
-    //         totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(newTotal)}`
-    //         saveCarrito(carrito)
-    //     })
-    // })
-    console.log("agregado")
+        return productName
+    }
+
+    dumps.forEach(button => {
+        button.addEventListener('click', () => {
+            const productName = getProductName(button.parentElement)
+            console.log(productName) //TODO: this has a strange behavior (it gets triggered more than once)
+        })
+    })
 }
 
+
+/**
+ * @param {Array<{productName: string, price: number}>} carrito 
+ * @returns {number} The sum of all product prices
+ */
 const getTotalPrice = carrito => {
     let totalPrice = 0
     for(const product of carrito) {
@@ -73,6 +109,11 @@ const getTotalPrice = carrito => {
     return totalPrice
 } 
 
+
+/**
+ * @param { {productName: string, price: number, img: string} } data
+ * @param {number} counter 
+ */
 const chargeDataToModal = (data, counter) => {
     productCounter.innerText = 
         counter === 1

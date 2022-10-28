@@ -37,7 +37,7 @@ function main() {
             if(Object.keys(data).length) {
                 data.total = getTotalPrice(carrito)
                 saveCarrito(carrito)
-                chargeDataToModal(data, carrito.length + 1)
+                chargeDataToModal(data, carrito.length)
             }
         })
     })
