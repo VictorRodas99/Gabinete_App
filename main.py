@@ -32,6 +32,7 @@ def page_status():
 
 @app.route('/', methods=['GET', 'POST'])
 def render():
+    query_search = None
     method = request.method
 
     if method == 'GET':
@@ -43,7 +44,8 @@ def render():
             return render_template("temporal_debug.html", code=code)
 
     elif method == 'POST':
-        query = request.form['searching'].replace(" ", "+")
+        query_search = request.form['searching']
+        query = query_search.replace(" ", "+")
         search_url = f"https://www.casanissei.com/py/catalogsearch/result/?q={query}"
 
         if page_status() < 400:
@@ -51,7 +53,7 @@ def render():
         else:
             socket.emit('Response', {})
 
-    return render_template('home.html')
+    return render_template('home.html', query=query_search)
 
 
 @app.route('/product', methods=['GET', 'POST'])

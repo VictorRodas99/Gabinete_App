@@ -19,7 +19,13 @@
         {{ b.menu() }}
     
         <main class="product-section">
-            <h1 class="product-section__title">Productos</h1>
+            <h1 class="product-section__title">
+                {% if query %}
+                    Resultados para '{{ query }}'
+                {% else %}
+                    Productos
+                {% endif %}
+            </h1>
             <div class="product-section__products-container">
             </div>
             <button class="shopping-cart-button">

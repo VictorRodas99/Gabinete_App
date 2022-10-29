@@ -121,13 +121,12 @@ const eventDump = () => {
 
             if(totalAmount === 0) {
                 modalBody.removeChild(container)
-                modifyGeneralCounter(carrito.length)
             } else {
-                modifyGeneralCounter(carrito.length)
-
                 const specificCounter = container.querySelector(".product-specific-counter")
                 specificCounter.innerText = totalAmount
             }
+
+            modifyGeneralCounter(carrito.length)
         })
     })
 }
