@@ -72,25 +72,52 @@ const getProductData = button => {
 
 /* Modal functions */
 
+const getProductName = container => {
+    const siblings = container.parentElement.children
+    const [ nameContainer ] = [...siblings].filter(element => element.className === "product-details")
+    const productName = nameContainer.firstChild.textContent
+
+    return productName
+}
+
+const getProductQuantity = data => {
+    let counter = 0
+    for(const product of carrito) {
+        if(product.productName === data.productName) counter += 1
+    }
+
+    return counter > 0 ? counter : 0 
+}
+
+const removeProduct = (carrito, givenName) => {
+    const index = carrito.findIndex(product => product.productName === givenName)
+    return carrito.splice(index, 1)
+}
+
+
 /**
  * Puts a click event for all the dumpster buttons
  */
 const eventDump = () => {
+    const containers = document.getElementsByClassName("body__product")
     const dumps = document.querySelectorAll(".product-trash > span")
     const totalPriceContainer = document.querySelector("#header__counter")
 
-    const getProductName = container => {
-        const siblings = container.parentElement.children
-        const [ nameContainer ] = [...siblings].filter(element => element.className === "product-details")
-        const productName = nameContainer.firstChild.textContent
-
-        return productName
-    }
-
-    dumps.forEach(button => {
-        button.addEventListener('click', () => {
+    dumps.forEach((button, index) => {
+        button.addEventListener('click', function handler() {
             const productName = getProductName(button.parentElement)
-            console.log(productName) //TODO: this has a strange behavior (it gets triggered more than once)
+            carrito = removeProduct(carrito, productName)
+
+            const totalAmount = getProductQuantity({ productName })
+            if(totalAmount === 0) {
+                modalBody.remove(containers[index])
+            } else {
+                totalPriceContainer.innerText = carrito.length
+            }
+
+            //TODO: remove product from DOM or decrease the counter of that product
+
+            button.removeEventListener('click', handler)
         })
     })
 }
@@ -110,15 +137,43 @@ const getTotalPrice = carrito => {
 } 
 
 
+const verifyCart = giveName => {
+    const products = document.querySelectorAll('.product-details > p')
+    let exists = false;
+
+    [...products].forEach(product => {
+        if(product.textContent === giveName) exists = true
+    })
+
+    return exists
+}
+
 /**
  * @param { {productName: string, price: number, img: string} } data
  * @param {number} counter 
  */
 const chargeDataToModal = (data, counter) => {
-    productCounter.innerText = 
-        counter === 1
-        ? `${counter} item`
-        : `${counter} items`
+    const productCounter = getProductQuantity(data)
+    const existsProduct = verifyCart(data.productName)
+
+    generalCounter.innerText = 
+    counter === 1
+    ? `${counter} item`
+    : `${counter} items`
+
+    if(productCounter > 1 && existsProduct) {
+        const products = document.querySelectorAll('.product-details > #details__product-name')
+        products.forEach(nameContainer => {
+            if(nameContainer.textContent === data.productName) {
+                const bodyProduct = nameContainer.closest('.body__product')
+                const [ currentCounter ] = [...bodyProduct.children].filter(e => e.className === 'product-specific-counter')
+
+                currentCounter.innerText = productCounter
+            }
+        })
+
+        return
+    }
 
     const bodyCard = document.querySelector(".shopping-cart__body")
 
@@ -151,7 +206,7 @@ const chargeDataToModal = (data, counter) => {
     name.id = "details__product-name"
     name.innerText = data.productName
 
-    specificCounter.innerText = 2 //temporal
+    specificCounter.innerText = productCounter
 
     price.innerText = `Gs. ${getFinalFormat(data.price)}`
 

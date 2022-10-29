@@ -4,7 +4,7 @@ var buttons = []
 
 const modal = document.querySelector(".cart-main-container")
 const toExcelButton = document.querySelector("#footer__button-save")
-const productCounter = document.querySelector("#header__counter")
+const generalCounter = document.querySelector("#header__counter")
 
 const mainModalElements = [...modal.children].filter(e => e.className.includes("shopping-cart__"))
 const [ modalHeader, modalBody, modalFooter ] = mainModalElements
