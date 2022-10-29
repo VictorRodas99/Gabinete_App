@@ -106,12 +106,11 @@
 
 .product-trash { width: 15% }
 
-.product-trash > span {
-    cursor: pointer;
+.product-trash > button {
     color: #000;
     transition: all .3s ease;
 }
-.product-trash > span:hover { color: #c21858; }
+.product-trash > button:hover { color: #c21858; }
 
 .product-img > img {
     width: auto;
