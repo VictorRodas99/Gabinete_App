@@ -38,11 +38,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all .3s ease-out;
-}
-
-.products-container__product:hover > .product-body {
-    border-bottom: 2px solid var(--primary-color);
 }
 
 .product-body__name {
@@ -67,7 +62,6 @@
 
 .product-footer__item {
     display: flex;
-    border-top: 2px solid #a3a3a3;
     justify-content: center;
     position: relative;
 }
@@ -100,9 +94,9 @@
     transition: all .3s ease;
 }
 
-.product-footer__item > button:hover + .item__message {
+.product-footer__item > .item__button:hover + .item__message {
     display: flex;
-   justify-content: center;
+    justify-content: center;
 }
 
 
