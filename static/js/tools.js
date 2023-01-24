@@ -1,150 +1,238 @@
 /**
  * Saves the array in localStorage
- * @param {Array<{productName: String, price: Number}>} currentCarrito 
+ * @param {Array<{productName: string, price: number}>} currentCarrito
  */
- const saveCarrito = currentCarrito => {
-    try {
-        localStorage.setItem('carrito', JSON.stringify(currentCarrito))
-    } catch (error) {
-        console.error(error)
-    }
+const saveCarrito = (currentCarrito) => {
+  try {
+    localStorage.setItem('carrito', JSON.stringify(currentCarrito))
+  } catch (error) {
+    console.error(error)
+  }
 }
-
 
 /**
  * Returns the price without any character
- * @param {String} price 
- * @returns {Number}
+ * @param {string} price
+ * @returns {number}
  */
-const getPriceFormat = price => {
-    const priceNumber = parseInt(price.replace(/\D/g, ''))
-    return isNaN(priceNumber) ? 0 : priceNumber
+const getPriceFormat = (price) => {
+  const priceNumber = Number(price.replace(/\D/g, ''))
+  return isNaN(priceNumber) ? 0 : priceNumber
 }
 
+/**
+ * @param {number} price
+ * @returns {string} The price with thousand separator, the character separator is a period (.)
+ */
+const getFinalFormat = (price) => price.toLocaleString('de-DE')
 
 /**
- * @param {Number} price 
- * @returns {String} The price with thousand separator, the character separator is a period (.)
+ * @param {string} price
+ * @returns { {isCorrect: boolean, price: number} }
  */
-const getFinalFormat = price => price.toLocaleString('de-DE')
+const validateData = (price) => {
+  price = getPriceFormat(price)
 
+  if (!price) return { isCorrect: false, price: 0 }
 
-/**
- * Validates if exists data in the Node element,
- * and if the product price inside data is a correct number
- * @param {Node} details
- * @returns { {isCorrect: Boolean, price: Number} }
- */
-const validateData = details => {
-    const defaultReturn = { isCorrect: false, price: 0 }
-
-    if(!details) return defaultReturn
-
-    let price = details.childNodes[0].textContent
-    price = getPriceFormat(price)
-
-    if(!price) return defaultReturn
-    
-    return {
-        isCorrect: true,
-        price
-    }
+  return {
+    isCorrect: true,
+    price
+  }
 }
-
 
 /**
  * Returns an empty object if the data inside Element wasn't valid
- * @param {Element} button 
- * @returns { {productName: String, price: Number} | {}}
+ * @param {Element} button
+ * @returns { {productName: string, price: number, img: string} | {}}
  */
-const getProductData = button => {
-    const card = button.parentElement.parentElement
-    const [ img, productContainer, details ] = card.childNodes
-    const productName = (productContainer.textContent).replaceAll('"', "'")
+const getProductData = (button) => {
+  const card = button.closest('.products-container__product')
+  const [cardHeader, cardBody] = card.childNodes
+  const [dirtyName, dirtyPrice] = cardBody.childNodes
+  const [img] = cardHeader.childNodes
 
-    const { isCorrect, price } = validateData(details)
+  const productName = dirtyName.textContent.replaceAll('"', "'")
+  const { isCorrect, price } = validateData(dirtyPrice.textContent)
 
-    if(!isCorrect) return {}
-    
-    const data = { productName, price }
+  if (!isCorrect) return {}
 
-    carrito.push(data)
-    saveCarrito(carrito)
+  const data = { productName, price, img: img.src }
 
-    return data
+  carrito.push(data)
+  saveCarrito(carrito)
+
+  return data
 }
 
-
 /* Modal functions */
+
+const getProductName = (container) => {
+  const siblings = container.parentElement.children
+  const [nameContainer] = [...siblings].filter(
+    (element) => element.className === 'product-details'
+  )
+  const productName = nameContainer.firstChild.textContent
+
+  return productName
+}
+
+const getProductQuantity = (data) => {
+  let counter = 0
+  for (const product of carrito) {
+    if (product.productName === data.productName) counter += 1
+  }
+
+  return counter
+}
+
+const removeProduct = (carrito, givenName) => {
+  const index = carrito.findIndex(
+    (product) => product.productName === givenName
+  )
+  carrito.splice(index, 1)
+}
+
+const modifyGeneralCounter = (counter) => {
+  generalCounter.innerText =
+    counter === 1 ? `${counter} item` : `${counter} items`
+}
 
 /**
  * Puts a click event for all the dumpster buttons
  */
 const eventDump = () => {
-    const dumps = document.getElementsByClassName("trash")
-    const totalPriceContainer = document.querySelector("#total")
+  const dumps = document.querySelectorAll('.product-trash > button')
 
-    Array.from(dumps).forEach((button, index) => {
-        button.addEventListener('click', () => {
-            carrito.splice(index, 1)
+  dumps.forEach((button) => {
+    button.addEventListener('click', function handler() {
+      const container = button.parentElement.parentElement
+      const productName = getProductName(button.parentElement)
 
-            const dataContainer = button.parentElement.parentElement
-            dataContainer.innerHTML = ''
-            modalBody.removeChild(dataContainer)
+      removeProduct(carrito, productName)
+      saveCarrito(carrito)
 
-            counter -= 1;
-            bubbleCounter.innerText = counter
-            
-            const newTotal = getTotalPrice(carrito)
-            totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(newTotal)}`
-            saveCarrito(carrito)
-        })
+      const totalAmount = getProductQuantity({ productName })
+
+      if (totalAmount === 0) {
+        modalBody.removeChild(container)
+      } else {
+        const specificCounter = container.querySelector(
+          '.product-specific-counter'
+        )
+        specificCounter.innerText = totalAmount
+      }
+
+      modifyGeneralCounter(carrito.length)
     })
+  })
 }
 
-
 /**
- * @param {Array<{productName: String, price: Number}>} carrito 
- * @returns {Number} The sum of all product prices
+ * @param {Array<{productName: string, price: number}>} carrito
+ * @returns {number} The sum of all product prices
  */
-const getTotalPrice = carrito => {
-    let totalPrice = 0
-    for(const product of carrito) {
-        totalPrice += product.price
-    }
+const getTotalPrice = (carrito) => {
+  let totalPrice = 0
+  for (const product of carrito) {
+    totalPrice += product.price
+  }
 
-    return totalPrice
+  return totalPrice
 }
 
+const verifyCart = (giveName) => {
+  const products = document.querySelectorAll('.product-details > p')
+  let exists = false
+
+  ;[...products].forEach((product) => {
+    if (product.textContent === giveName) exists = true
+  })
+
+  return exists
+}
+
+//TODO: the sum total of the prices must be implemented
 
 /**
- * @param { {productName: String, price: Number, total: Number} } data 
+ * @param { {productName: string, price: number, img: string} } data
+ * @param {number} counter
  */
-const chargeDataToModal = data => {
-    counter += 1
-    bubbleCounter.innerText = counter
+const chargeDataToModal = (data, counter) => {
+  const productCounter = getProductQuantity(data)
+  const existsProduct = verifyCart(data.productName)
 
-    const dataContainer = document.createElement("div")
-    const name = document.createElement("p")
-    const subContainer = document.createElement("div")
-    const price = document.createElement("p")
-    const trashButton = document.createElement("button")
-    const totalPriceContainer = document.querySelector("#total")
+  modifyGeneralCounter(counter)
 
-    dataContainer.className = "modal__data-container"
-    subContainer.className = "modal__subcontainer"
+  if (productCounter > 1 && existsProduct) {
+    const products = document.querySelectorAll(
+      '.product-details > #details__product-name'
+    )
+    products.forEach((nameContainer) => {
+      if (nameContainer.textContent === data.productName) {
+        const bodyProduct = nameContainer.closest('.body__product')
+        const [currentCounter] = [...bodyProduct.children].filter(
+          (e) => e.className === 'product-specific-counter'
+        )
 
-    trashButton.className = "trash far fa-trash-alt"
-    price.className = "price"
+        currentCounter.innerText = productCounter
+      }
+    })
 
-    name.innerText = data.productName
-    price.innerText = `Gs. ${getFinalFormat(data.price)}`
-    totalPriceContainer.innerText = `Total: Gs. ${getFinalFormat(data.total)}`
+    return
+  }
 
-    dataContainer.append(name)
-    subContainer.append(price, trashButton)
-    dataContainer.append(subContainer)
+  const bodyCard = document.querySelector('.shopping-cart__body')
 
-    modalBody.append(dataContainer)
-    eventDump()
+  const bodyProduct = document.createElement('div')
+  const imgContainer = document.createElement('div')
+  const img = document.createElement('img')
+
+  const productDetails = document.createElement('div')
+  const name = document.createElement('p')
+
+  const counterContainer = document.createElement('div')
+  const priceContainer = document.createElement('div')
+  const price = document.createElement('p')
+
+  const specificCounter = document.createElement('p')
+  const trashContainer = document.createElement('div')
+  const trashButton = document.createElement('button')
+
+  bodyProduct.className = 'body__product'
+  imgContainer.className = 'product-img'
+  productDetails.className = 'product-details'
+  counterContainer.className = 'product-specific-counter'
+  priceContainer.className = 'product-price'
+  trashContainer.className = 'product-trash'
+
+  img.src = data.img
+  img.alt = 'cart-product'
+
+  name.id = 'details__product-name'
+  name.innerText = data.productName
+
+  specificCounter.innerText = productCounter
+
+  price.innerText = `Gs. ${getFinalFormat(data.price)}`
+
+  trashButton.className = 'material-symbols-outlined reset-button'
+  trashButton.innerText = 'delete'
+
+  imgContainer.append(img)
+  productDetails.append(name)
+  counterContainer.append(specificCounter)
+  priceContainer.append(price)
+  trashContainer.append(trashButton)
+
+  bodyProduct.append(
+    imgContainer,
+    productDetails,
+    counterContainer,
+    priceContainer,
+    trashContainer
+  )
+
+  bodyCard.append(bodyProduct)
+  eventDump()
 }

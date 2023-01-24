@@ -1,0 +1,51 @@
+{% import 'base.html' as b %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {{ b.head_one() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/product-page/view-section.css') }}">
+
+    <!-- javascript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/socket.js') }}" defer></script>
+    {{ b.head_two_scripts() }}
+    <!--  -->
+</head>
+<body>
+    {{ b.header() }}
+    {{ b.menu() }}
+
+    <main class="product-section-view">
+        <div class="product-section-vew__img">
+            <img src="./imgs/product01.png" alt="product">
+        </div>
+        <div class="product-section-view__details">
+            <div class="details__name">
+                <h2>Product Name</h2>
+                <h3>Categoría: Laptops</h3>
+            </div>
+            <div class="details__more-details">
+                <ul class="items-container">
+                    <li class="more-details__items">Tamaño de pantalla: Algo</li>
+                    <li class="more-details__items">Otra descripción: Algo</li>
+                    <li class="more-details__items">Otra descripción: Algo</li>
+                    <li class="more-details__items">Otra descripción: Algo</li>
+                </ul>
+            </div>
+            <div class="product__cart-price">
+                <button class="add-to-cart reset-button">
+                    <span id="add-to-cart__icon" class="material-symbols-outlined">add_shopping_cart</span>
+                    Agregar a carrito
+                </button>
+                <p>Gs. 1.500.000</p>
+            </div>
+        </div>
+        <button class="shopping-cart-button">
+            <span class="material-symbols-outlined">shopping_cart</span>
+        </button>
+    </main>
+
+    {{ b.shopping_cart() }}
+    {{ b.footer() }}
+</body>
+</html>

@@ -19,46 +19,57 @@ settings_for_runner = {
 }
 
 runner = CrawlerRunner(settings_for_runner)
-base_url = "https://www.casanissei.com/py/informatica"
+base_url = "http://www.casanissei.com/py/informatica"
 excel_path = "data/productos.xlsx"
+
 
 def page_status():
     try:
         code = requests.get(base_url).status_code
     except requests.exceptions.ConnectionError:
         code = 503
-    
+
     return code
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route("/", methods=["GET", "POST"])
 def render():
+    query_search = None
     method = request.method
 
-    if method == 'GET':
-        if page_status() < 400:
+    if method == "GET":
+        code = page_status()
+        if code < 400:
             scraper(base_url)
         else:
-            socket.emit('Response', {})
+            socket.emit("Response", {})
+            return render_template("error.html", code=code)
 
-    elif method == 'POST':
-        query = request.form['searhing'].replace(" ", "+")
+    elif method == "POST":
+        query_search = request.form["searching"]
+        query = query_search.replace(" ", "+")
         search_url = f"https://www.casanissei.com/py/catalogsearch/result/?q={query}"
 
         if page_status() < 400:
             scraper(search_url)
         else:
-            socket.emit('Response', {})
+            socket.emit("Response", {})
 
-    return render_template('home.html')
+    return render_template("home.html", query=query_search)
 
 
-@app.route('/file', methods=['GET'])
+@app.route("/product", methods=["GET", "POST"])
+def render_product():
+    return render_template("product.html")
+
+
+@app.route("/file", methods=["GET"])
 def send_file():
     try:
-        abs_path, filename = excel_path.split('/')
-        return send_from_directory(f'{abs_path}/', filename)
+        abs_path, filename = excel_path.split("/")
+        return send_from_directory(f"{abs_path}/", filename)
     except FileNotFoundError:
-        return render_template('error.html'), 404
+        return render_template("error.html"), 404
 
 
 @crochet.run_in_reactor
@@ -69,21 +80,21 @@ def scraper(url):
 
 def get_data(spider):
     data = spider.data
-    socket.emit('Response', data)
+    socket.emit("Response", data)
 
 
-@socket.on('carrito')
-def get_carrito(data): 
-    carrito = data['carrito']
+@socket.on("carrito")
+def get_carrito(data):
+    carrito = data["carrito"]
 
     for product in carrito:
-        del product['total']
+        del product["total"]
 
-    headers = ['Nombre', 'Precio']
+    headers = ["Nombre", "Precio"]
 
     create_excel_file(excel_path, headers, carrito)
-    socket.emit('carrito', { 'url': 'file' })
+    socket.emit("carrito", {"url": "file"})
 
 
-if __name__ == '__main__':
-    socket.run(app, host='0.0.0.0', debug=True)
+if __name__ == "__main__":
+    socket.run(app, host="0.0.0.0", debug=True)
