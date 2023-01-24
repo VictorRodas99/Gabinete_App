@@ -4,11 +4,16 @@
 <head>
     {{ b.head_one() }}
 
+    <!-- aditional css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/warning-message.css') }}">
+    <!--  -->
+
     <!-- javascript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/render.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/socket.js') }}" defer></script>
     {{ b.head_two_scripts() }}
+    <script src="{{ url_for('static', filename='js/warning-message.js') }}"></script>
     <!--  -->
 </head>
 <body>
@@ -17,6 +22,21 @@
     <section class="main-container">
         {{ b.header() }}
         {{ b.menu() }}
+
+        <section class="warning-message">
+            <div class="tape">
+                <div class="content">
+                    <div class="warning-message__close-btn">
+                        <span class="close-warning-modal material-symbols-outlined">close</span>
+                    </div>
+            
+                    <div class="warning-message__message">
+                        <h2>Esta web page aún sigue en desarrollo</h2>
+                        <p>Se pueden experimentar errores o carencia de performance</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     
         <main class="product-section">
             <h1 class="product-section__title">

@@ -1,0 +1,44 @@
+.warning-message {
+    position: fixed;
+    top: 30%;
+    left: 30%;
+    width: 50%;
+    height: 50%;
+    opacity: 1;
+    z-index: var(--top-index);
+    transition: opacity .2s ease;
+}
+
+.deactive {
+    opacity: 0;
+}
+
+.tape {
+    padding: 1rem;
+    background: repeating-linear-gradient(
+        -45deg,
+        #f2a417,
+        #f2a417 15px,
+        #141617 15px,
+        #141617 30px
+    );
+}
+
+.close-warning-modal {
+    cursor: pointer;
+}
+
+.content {
+    padding: 2rem;
+    background-color: #fff;
+}
+
+.warning-message__close-btn {
+    float: right;
+}
+
+.warning-message__message {
+    text-align: center;
+}
+
+.warning-message__message > p { font-style: italic; }

@@ -48,4 +48,6 @@ function main() {
       chargeDataToModal(product, counter + 1)
     )
   }
+
+  warningMessage() // Set toggler for warning modal in home page
 }
