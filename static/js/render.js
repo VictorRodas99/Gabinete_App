@@ -25,7 +25,7 @@ const createElements = () => {
             <div class="item__message">Agregar a carrito</div>
         </div>
         <div class="product-footer__item">
-            <a href="/product" class="material-symbols-outlined reset-a item__button">visibility</a>
+            <a href="/product" class="watch material-symbols-outlined reset-a item__button">visibility</a>
             <div class="item__message">Ver producto</div>
         </div>
     `
@@ -43,7 +43,6 @@ const createElements = () => {
 
 const setData = (data) => {
   data.forEach((product) => {
-    // const info = Object.entries(product.info)
     const price = product.info.Precio
     const { imgLink, name } = product
 
@@ -56,14 +55,6 @@ const setData = (data) => {
       productPrice,
       cardFooter
     } = createElements()
-
-    // info.forEach(([property, value]) => {
-    //     const items = document.createElement("li")
-    //     items.className = "list-group-item"
-    //     items.innerHTML = `<strong>${property}</strong>:${value}`
-
-    //     infoContainer.append(items)
-    // })
 
     img.src = imgLink
 
